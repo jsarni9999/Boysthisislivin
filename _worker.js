@@ -15,6 +15,10 @@ export default {
       });
     }
 
-    return env.ASSETS.fetch(request);
+    // Fall through to static assets
+    if (env.ASSETS) return env.ASSETS.fetch(request);
+    
+    // Fallback if no ASSETS binding
+    return fetch(request);
   }
 }
