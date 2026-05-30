@@ -11,6 +11,5 @@
   },
   "compatibility_flags": [
     "nodejs_compat"
-  ],
-  "main": "_worker.js"
+  ]
 }
