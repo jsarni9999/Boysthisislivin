@@ -1,3 +1,5 @@
+const HTML = null; // loaded from KV via ASSETS binding if available
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -15,13 +17,8 @@ export default {
       });
     }
 
-    if (env.ASSETS) {
-      const assetRequest = url.pathname === '/'
-        ? new Request(new URL('/index.html', request.url), request)
-        : request;
-      return env.ASSETS.fetch(assetRequest);
-    }
-
-    return new Response('Not found', { status: 404 });
+    const origin = `${url.protocol}//${url.host}`;
+    const assetUrl = url.pathname === '/' ? `${origin}/index.html` : `${origin}${url.pathname}`;
+    return fetch(assetUrl);
   }
 }
