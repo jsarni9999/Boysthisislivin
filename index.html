@@ -1,442 +1,156 @@
 <!DOCTYPE html>
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║           BOYS THIS IS LIVIN — SITE MAINTENANCE             ║
+  ╠══════════════════════════════════════════════════════════════╣
+  ║  GOOGLE SHEET URL (for dynamic home page text):             ║
+  ║  Search for: SHEET_CSV_URL                                  ║
+  ║  Located near the bottom of this file in a <script> block   ║
+  ║  Paste your published Google Sheet CSV URL between the ''   ║
+  ║                                                             ║
+  ║  UPDATING VIA CLAUDE:                                       ║
+  ║  1. Always upload THIS file (the latest version)            ║
+  ║  2. Make your changes                                       ║
+  ║  3. Download and replace on your host                       ║
+  ║  Your Sheet URL is preserved through every Claude update    ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Boys This Is Livin</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;700&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --green: #2d5a27;
-    --green-light: #3d7a34;
-    --green-dark: #1a3818;
-    --gold: #c9a84c;
-    --gold-light: #e8c96a;
-    --cream: #f5f0e8;
-    --cream-dark: #ede4d4;
-    --brown: #5c3d1e;
-    --white: #fff;
-    --text: #1a1a1a;
-    --text-muted: #5a5a5a;
-    --nav-h: 64px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Barlow', sans-serif; background: var(--cream); color: var(--text); }
-
-  /* NAV */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    height: var(--nav-h);
-    background: var(--green-dark);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 2rem;
-    border-bottom: 3px solid var(--gold);
-  }
-  .nav-logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.6rem; color: var(--gold); letter-spacing: 2px; cursor: pointer;
-  }
-  .nav-links { display: flex; gap: 0; }
-  .nav-links button {
-    background: none; border: none; color: #ccc;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.95rem; font-weight: 500; letter-spacing: 1px;
-    text-transform: uppercase; padding: 0 1rem; height: var(--nav-h);
-    cursor: pointer; transition: color 0.2s, border-bottom 0.2s;
-    border-bottom: 3px solid transparent; margin-bottom: -3px;
-  }
-  .nav-links button:hover { color: var(--gold-light); }
-  .nav-links button.active { color: var(--gold); border-bottom-color: var(--gold); }
-
-  /* PAGES */
-  .page { display: none; padding-top: var(--nav-h); min-height: 100vh; }
-  .page.active { display: block; }
-
-  /* HERO */
-  .hero {
-    padding: 1.75rem 2rem 1.5rem;
-    text-align: center; position: relative; overflow: hidden;
-    background-image: url('shawnee_inn.png');
-    background-size: cover; background-position: center top;
-  }
-  .hero::before {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(160deg, rgba(15,38,13,0.86) 0%, rgba(28,62,22,0.78) 55%, rgba(38,80,30,0.72) 100%);
-    z-index: 0;
-  }
-  .hero > * { position: relative; z-index: 1; }
-  .hero h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    color: var(--gold); letter-spacing: 4px; line-height: 1;
-    text-shadow: 0 2px 20px rgba(0,0,0,0.4);
-  }
-  .hero .subtitle {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 1rem; color: #b5d49e; letter-spacing: 3px;
-    text-transform: uppercase; margin: 0.3rem 0 1rem;
-  }
-  .hero-badges { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-  .badge {
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(201,168,76,0.4);
-    color: var(--gold-light); padding: 0.5rem 1.25rem;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase;
-    border-radius: 2px;
-  }
-  .badge strong { color: #fff; }
-
-  /* SECTIONS */
-  .section { padding: 2.5rem 2rem; max-width: 900px; margin: 0 auto; }
-  .section-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2rem; color: var(--green-dark); letter-spacing: 2px;
-    border-bottom: 3px solid var(--gold); padding-bottom: 0.4rem; margin-bottom: 1.5rem;
-    display: inline-block;
-  }
-
-  /* CARDS */
-  .card {
-    background: var(--white); border-radius: 4px;
-    border: 1px solid #ddd; border-left: 4px solid var(--green);
-    padding: 1.25rem 1.5rem; margin-bottom: 1rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-  }
-  .card h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 1px; color: var(--green-dark); margin-bottom: 0.5rem; }
-  .card p, .card li { font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; }
-  .card ul { padding-left: 1.2rem; }
-
-  /* SCHEDULE */
-  .day-block { margin-bottom: 2rem; }
-  .day-header {
-    background: var(--green); color: var(--gold);
-    font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem;
-    letter-spacing: 2px; padding: 0.6rem 1.25rem;
-    border-radius: 3px 3px 0 0;
-  }
-  .day-events { background: var(--white); border: 1px solid #ddd; border-top: none; border-radius: 0 0 3px 3px; }
-  .event-row {
-    display: grid; grid-template-columns: 110px 1fr;
-    border-bottom: 1px solid #eee;
-    padding: 0.75rem 1.25rem; gap: 1rem; align-items: start;
-  }
-  .event-row:last-child { border-bottom: none; }
-  .event-time { font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem;
-    font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.5px; padding-top: 1px; }
-  .event-name { font-size: 0.95rem; color: var(--text); font-weight: 500; }
-  .event-detail { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem; }
-  .tag {
-    display: inline-block; font-size: 0.7rem; font-family: 'Barlow Condensed', sans-serif;
-    text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 8px;
-    border-radius: 2px; margin-right: 4px;
-  }
-  .tag-golf { background: #e8f5e0; color: #2d5a27; }
-  .tag-meal { background: #fff3e0; color: #7a4a00; }
-  .tag-social { background: #e8eaf6; color: #3949ab; }
-  .tag-admin { background: #fce4ec; color: #880e4f; }
-
-  /* REGISTRATION */
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
-  .form-group.full { grid-column: 1 / -1; }
-  label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem;
-    font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--green-dark); }
-  input, select, textarea {
-    padding: 0.6rem 0.75rem; border: 1px solid #ccc; border-radius: 3px;
-    font-family: 'Barlow', sans-serif; font-size: 0.95rem; color: var(--text);
-    background: var(--white); transition: border-color 0.2s;
-  }
-  input:focus, select:focus { outline: none; border-color: var(--green); }
-  .btn {
-    background: var(--green); color: var(--white);
-    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
-    font-size: 1rem; letter-spacing: 1px; text-transform: uppercase;
-    border: none; padding: 0.75rem 2rem; border-radius: 3px; cursor: pointer;
-    transition: background 0.2s;
-  }
-  .btn:hover { background: var(--green-light); }
-  .btn-gold { background: var(--gold); color: var(--green-dark); }
-  .btn-gold:hover { background: var(--gold-light); }
-
-  /* ROOMMATE TABLE */
-  .table-wrap { overflow-x: auto; background: var(--white); border-radius: 4px; border: 1px solid #ddd; }
-  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-  thead tr { background: var(--green-dark); }
-  th { color: var(--gold); font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-    padding: 0.75rem 1rem; text-align: left; }
-  td { padding: 0.65rem 1rem; border-bottom: 1px solid #eee; color: var(--text); }
-  tr:last-child td { border-bottom: none; }
-  tr:nth-child(even) td { background: #f9f7f2; }
-  .status-in { color: #2d5a27; font-weight: 600; }
-  .status-out { color: #9e1a1a; font-weight: 600; }
-
-  /* HISTORY */
-  .year-section { margin-bottom: 2.5rem; }
-  .year-label {
-    font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem;
-    color: var(--gold); background: var(--green-dark);
-    display: inline-block; padding: 0 1rem; letter-spacing: 3px;
-    margin-bottom: 1rem;
-  }
-  .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.5rem; }
-  .photo-placeholder {
-    background: var(--green); aspect-ratio: 4/3;
-    border-radius: 3px; display: flex; align-items: center; justify-content: center;
-    color: rgba(255,255,255,0.4); font-size: 2rem;
-  }
-  .attendee-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem; }
-  .chip {
-    background: var(--cream-dark); border: 1px solid #c8bfa8;
-    font-size: 0.8rem; padding: 3px 10px; border-radius: 20px; color: var(--brown);
-    font-family: 'Barlow Condensed', sans-serif; font-weight: 500; letter-spacing: 0.5px;
-  }
-
-  /* ADMIN */
-  .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .admin-card {
-    background: var(--white); border-radius: 4px; border: 1px solid #ddd;
-    padding: 1.25rem; cursor: pointer; transition: border-color 0.2s, transform 0.1s;
-  }
-  .admin-card:hover { border-color: var(--green); transform: translateY(-2px); }
-  .admin-card h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem;
-    font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--green-dark); margin-bottom: 0.3rem; }
-  .admin-card p { font-size: 0.85rem; color: var(--text-muted); }
-  .admin-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
-
-  /* ACCORDION */
-  .accordion { background: var(--white); border: 1px solid #ddd; border-radius: 4px; overflow: hidden; margin-bottom: 0.5rem; }
-  .accordion-header {
-    width: 100%; background: none; border: none; text-align: left;
-    padding: 1rem 1.25rem; cursor: pointer;
-    font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem;
-    font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
-    color: var(--green-dark); display: flex; justify-content: space-between; align-items: center;
-  }
-  .accordion-header:hover { background: #f5f5f0; }
-  .accordion-body { padding: 0 1.25rem; max-height: 0; overflow: hidden; transition: max-height 0.3s, padding 0.3s; }
-  .accordion-body.open { max-height: 600px; padding: 0.75rem 1.25rem 1rem; }
-  .accordion-body p, .accordion-body li { font-size: 0.95rem; color: var(--text-muted); line-height: 1.7; }
-  .accordion-body ul { padding-left: 1.2rem; }
-  .chevron { transition: transform 0.3s; font-size: 0.8rem; }
-  .chevron.open { transform: rotate(180deg); }
-
-  /* ACCOMMODATION */
-  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .info-card {
-    background: var(--white); border-radius: 4px; border: 1px solid #ddd; padding: 1.25rem;
-  }
-  .info-card h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem;
-    font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--green-dark); margin-bottom: 0.75rem; }
-  .info-card ul { list-style: none; padding: 0; }
-  .info-card li { padding: 0.35rem 0; font-size: 0.9rem; color: var(--text-muted);
-    border-bottom: 1px solid #f0ece4; display: flex; align-items: center; gap: 0.5rem; }
-  .info-card li:last-child { border-bottom: none; }
-
-  /* SUCCESS */
-  .success-msg { display: none; background: #e8f5e0; border: 1px solid #7cb97c;
-    color: #2d5a27; padding: 1rem 1.25rem; border-radius: 4px; margin-top: 1rem;
-    font-weight: 600; }
-
-  /* TABS (admin sub) */
-  .tab-bar { display: flex; gap: 0; border-bottom: 2px solid #ddd; margin-bottom: 1.5rem; }
-  .tab-btn {
-    background: none; border: none; font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.9rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
-    color: var(--text-muted); padding: 0.6rem 1.25rem; cursor: pointer;
-    border-bottom: 2px solid transparent; margin-bottom: -2px;
-  }
-  .tab-btn.active { color: var(--green); border-bottom-color: var(--green); }
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
-
-  /* HAMBURGER */
-  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; background: none; border: none; }
-  .hamburger span { display: block; width: 24px; height: 2px; background: var(--gold); border-radius: 2px; transition: all 0.3s; }
-  .mobile-menu {
-    display: none; position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 99;
-    background: var(--green-dark); border-top: 1px solid rgba(201,168,76,0.3);
-    flex-direction: column; padding: 0.5rem 0;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-  }
-  .mobile-menu.open { display: flex; }
-  .mobile-menu button {
-    background: none; border: none; color: #ccc;
-    font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem;
-    font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
-    padding: 0.85rem 1.5rem; text-align: left; cursor: pointer;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-  }
-  .mobile-menu button:hover, .mobile-menu button.active { color: var(--gold); background: rgba(255,255,255,0.05); }
-
-  @media (max-width: 700px) {
-    :root { --nav-h: 56px; }
-
-    /* Nav — hide links, show hamburger */
-    .nav-links { display: none; }
-    .hamburger { display: flex; }
-    .nav-logo { font-size: 1.1rem; letter-spacing: 1px; }
-
-    /* Hero */
-    .hero { padding: 1.25rem 1rem 1rem; }
-    .hero h1 { font-size: clamp(1.8rem, 8vw, 2.8rem); letter-spacing: 2px; }
-    .hero .subtitle { font-size: 0.8rem; letter-spacing: 2px; margin: 0.2rem 0 0.75rem; }
-    .hero-badges { gap: 0.4rem; }
-    .badge { font-size: 0.75rem; padding: 0.3rem 0.75rem; }
-
-    /* Sections */
-    .section { padding: 1.5rem 1rem; }
-    .section-title { font-size: 1.5rem; }
-
-    /* Photo stack */
-    #photo-stack { width: 100% !important; }
-
-    /* Buttons */
-    .btn { padding: 0.7rem 1.25rem; font-size: 0.9rem; }
-
-    /* Cards */
-    .card { padding: 1rem; }
-
-    /* Forms */
-    .form-grid, .admin-grid, .info-grid { grid-template-columns: 1fr; }
-    input, select, textarea { font-size: 1rem; padding: 0.7rem 0.75rem; }
-
-    /* Schedule rows */
-    .event-row { grid-template-columns: 80px 1fr; padding: 0.6rem 0.9rem; gap: 0.6rem; }
-    .event-time { font-size: 0.75rem; }
-    .event-name { font-size: 0.9rem; }
-    .event-detail { font-size: 0.8rem; }
-    .day-header { font-size: 1.3rem; padding: 0.5rem 1rem; }
-
-    /* Roommate table */
-    .event-row[style*="1.4fr"] { grid-template-columns: 1fr 0.8fr !important; }
-
-    /* Tab bar — scrollable */
-    .tab-bar { overflow-x: auto; -webkit-overflow-scrolling: touch; flex-wrap: nowrap; }
-    .tab-btn { white-space: nowrap; font-size: 0.8rem; padding: 0.5rem 0.9rem; }
-
-    /* Accordion */
-    .accordion-header { font-size: 0.95rem; padding: 0.85rem 1rem; }
-
-    /* Year label */
-    .year-label { font-size: 1.8rem; }
-
-    /* Photo grid */
-    .photo-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
-
-    /* Quick link cards */
-    .card h3 { font-size: 1rem; }
-  }
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;700&family=Cinzel:wght@700;900&family=Permanent+Marker&display=swap" rel="stylesheet">
+<style>:root{--green:#2e4a5a;--green-light:#3a5f72;--green-dark:#1e2d3a;--gold:#d4943a;--gold-light:#e8b05a;--cream:#f8f4ec;--cream-dark:#f0e8d0;--brown:#6b4e28;--white:#fff;--text:#1e2020;--text-muted:#62605a;--nav-h:60px;--radius:8px;}*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Barlow',sans-serif;background:var(--cream);color:var(--text);}nav{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--nav-h);background:var(--green-dark);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;border-bottom:3px solid var(--gold);}.nav-logo{font-family:'Permanent Marker',cursive;font-size:1.3rem;color:var(--gold);cursor:pointer;letter-spacing:1px;}.nav-links{display:flex;gap:0;}.nav-links button{background:none;border:none;color:rgba(255,255,255,0.75);font-family:'Barlow Condensed',sans-serif;font-size:0.9rem;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;padding:0 0.9rem;height:var(--nav-h);cursor:pointer;transition:color 0.2s;border-bottom:3px solid transparent;margin-bottom:-3px;}.nav-links button:hover{color:var(--gold-light);}.nav-links button.active{color:var(--gold);border-bottom-color:var(--gold);}.page{display:none;padding-top:var(--nav-h);min-height:100vh;}.page.active{display:block;}.hero{padding:1.75rem 2rem 1.5rem;text-align:center;position:relative;overflow:hidden;background-image:url('/shawnee_in');background-size:cover;background-position:center 15%;}.hero::before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(18,26,36,0.52) 0%,rgba(25,38,52,0.44) 55%,rgba(35,55,70,0.36) 100%);z-index:0;}.hero>*{position:relative;z-index:1;}.hero h1{font-family:'Permanent Marker',cursive;font-size:clamp(2rem,6vw,3.8rem);color:var(--gold);line-height:1.1;text-shadow:2px 3px 0px rgba(0,0,0,0.6),0 0 40px rgba(0,0,0,0.5);transform:rotate(-1deg);display:inline-block;}.hero .subtitle{font-family:'Barlow Condensed',sans-serif;font-size:1rem;color:#c8dce8;letter-spacing:2px;text-transform:uppercase;margin:0.4rem 0 1rem;opacity:0.9;}.hero-badges{display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;}.badge{background:rgba(0,0,0,0.3);border:1px solid rgba(212,168,67,0.5);color:#f0d890;padding:0.4rem 1rem;font-family:'Barlow Condensed',sans-serif;font-size:0.85rem;letter-spacing:0.5px;border-radius:20px;backdrop-filter:blur(4px);}.badge strong{color:#fff;}.section{padding:2rem 2rem;max-width:900px;margin:0 auto;}.section-title{font-family:'Permanent Marker',cursive;font-size:1.7rem;color:var(--green-dark);border-bottom:3px solid var(--gold);padding-bottom:0.3rem;margin-bottom:1.5rem;display:inline-block;transform:rotate(-0.5deg);}.card{background:var(--white);border-radius:var(--radius);border:1px solid #e0d8c8;border-left:4px solid var(--green);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:box-shadow 0.2s;}.card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.1);}.card h3{font-family:'Barlow Condensed',sans-serif;font-size:1.05rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--green-dark);margin-bottom:0.5rem;}.card p,.card li{font-size:0.95rem;color:var(--text-muted);line-height:1.6;}.card ul{padding-left:1.2rem;}.day-block{margin-bottom:2rem;}.day-header{background:var(--green);color:var(--gold);font-family:'Permanent Marker',cursive;font-size:1.3rem;letter-spacing:1px;padding:0.6rem 1.25rem;border-radius:var(--radius) var(--radius) 0 0;}.day-events{background:var(--white);border:1px solid #e0d8c8;border-top:none;border-radius:0 0 var(--radius) var(--radius);}.event-row{display:grid;grid-template-columns:110px 1fr;border-bottom:1px solid #eee;padding:0.75rem 1.25rem;gap:1rem;align-items:start;}.event-row:last-child{border-bottom:none;}.event-time{font-family:'Barlow Condensed',sans-serif;font-size:0.85rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.5px;padding-top:1px;}.event-name{font-size:0.95rem;color:var(--text);font-weight:500;}.event-detail{font-size:0.85rem;color:var(--text-muted);margin-top:0.2rem;}.tag{display:inline-block;font-size:0.7rem;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:0.5px;padding:2px 8px;border-radius:2px;margin-right:4px;}.tag-golf{background:#ddeaf0;color:#1e2d3a;}.tag-meal{background:#fdf0e0;color:#7a4a10;}.tag-social{background:#e8edf5;color:#1e2d3a;}.tag-admin{background:#fce4ec;color:#7a1a30;}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}.form-group{display:flex;flex-direction:column;gap:0.3rem;}.form-group.full{grid-column:1 / -1;}label{font-family:'Barlow Condensed',sans-serif;font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--green-dark);}input,select,textarea{padding:0.6rem 0.75rem;border:1px solid #ccc;border-radius:3px;font-family:'Barlow',sans-serif;font-size:0.95rem;color:var(--text);background:var(--white);transition:border-color 0.2s;}input:focus,select:focus{outline:none;border-color:var(--green);}.btn{background:var(--green);color:var(--white);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.5px;text-transform:uppercase;border:none;padding:0.7rem 1.75rem;border-radius:25px;cursor:pointer;transition:background 0.2s,transform 0.1s;}.btn:hover{background:var(--green-light);transform:translateY(-1px);}.btn:active{transform:translateY(0);}.btn-gold{background:var(--gold);color:var(--green-dark);}.btn-gold:hover{background:var(--gold-light);}.table-wrap{overflow-x:auto;background:var(--white);border-radius:4px;border:1px solid #ddd;}table{width:100%;border-collapse:collapse;font-size:0.9rem;}thead tr{background:var(--green-dark);}th{color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:0.75rem 1rem;text-align:left;}td{padding:0.65rem 1rem;border-bottom:1px solid #eee;color:var(--text);}tr:last-child td{border-bottom:none;}tr:nth-child(even) td{background:#f9f7f2;}.status-in{color:#2d5a27;font-weight:600;}.status-out{color:#9e1a1a;font-weight:600;}.year-section{margin-bottom:2.5rem;}.year-label{font-family:'Permanent Marker',cursive;font-size:2.5rem;color:var(--gold);background:var(--green-dark);display:inline-block;padding:0 1rem;letter-spacing:3px;margin-bottom:1rem;}.attendee-chips{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.75rem;}.chip{background:var(--cream-dark);border:1px solid #c8bfa8;font-size:0.8rem;padding:3px 10px;border-radius:20px;color:var(--brown);font-family:'Barlow Condensed',sans-serif;font-weight:500;letter-spacing:0.5px;}.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}.admin-card{background:var(--white);border-radius:4px;border:1px solid #ddd;padding:1.25rem;cursor:pointer;transition:border-color 0.2s,transform 0.1s;}.admin-card:hover{border-color:var(--green);transform:translateY(-2px);}.admin-card h3{font-family:'Barlow Condensed',sans-serif;font-size:1.05rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--green-dark);margin-bottom:0.3rem;}.admin-card p{font-size:0.85rem;color:var(--text-muted);}.admin-icon{font-size:1.5rem;margin-bottom:0.5rem;}.accordion{background:var(--white);border:1px solid #ddd;border-radius:4px;overflow:hidden;margin-bottom:0.5rem;}.accordion-header{width:100%;background:none;border:none;text-align:left;padding:1rem 1.25rem;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:1.05rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--green-dark);display:flex;justify-content:space-between;align-items:center;}.accordion-header:hover{background:#f5f5f0;}.accordion-body{padding:0 1.25rem;max-height:0;overflow:hidden;transition:max-height 0.3s,padding 0.3s;}.accordion-body.open{max-height:600px;padding:0.75rem 1.25rem 1rem;}.accordion-body p,.accordion-body li{font-size:0.95rem;color:var(--text-muted);line-height:1.7;}.accordion-body ul{padding-left:1.2rem;}.chevron{transition:transform 0.3s;font-size:0.8rem;}.chevron.open{transform:rotate(180deg);}.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}.info-card{background:var(--white);border-radius:4px;border:1px solid #ddd;padding:1.25rem;}.info-card h3{font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--green-dark);margin-bottom:0.75rem;}.info-card ul{list-style:none;padding:0;}.info-card li{padding:0.35rem 0;font-size:0.9rem;color:var(--text-muted);border-bottom:1px solid #f0ece4;display:flex;align-items:center;gap:0.5rem;}.info-card li:last-child{border-bottom:none;}.success-msg{display:none;background:#e8f5e0;border:1px solid #7cb97c;color:#2d5a27;padding:1rem 1.25rem;border-radius:4px;margin-top:1rem;font-weight:600;}.tab-bar{display:flex;gap:0;border-bottom:2px solid #ddd;margin-bottom:1.5rem;}.tab-btn{background:none;border:none;font-family:'Barlow Condensed',sans-serif;font-size:0.9rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);padding:0.6rem 1.25rem;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;}.tab-btn.active{color:var(--green);border-bottom-color:var(--green);}.tab-panel{display:none;}.tab-panel.active{display:block;}.history-tab-panel{display:none;}.history-tab-panel.active{display:block;}.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;background:none;border:none;}.hamburger span{display:block;width:24px;height:2px;background:var(--gold);border-radius:2px;transition:all 0.3s;}.mobile-menu{display:none;position:fixed;top:var(--nav-h);left:0;right:0;z-index:99;background:var(--green-dark);border-top:1px solid rgba(201,168,76,0.3);flex-direction:column;padding:0.5rem 0;box-shadow:0 8px 24px rgba(0,0,0,0.3);}.mobile-menu.open{display:flex;}.mobile-menu button{background:none;border:none;color:#ccc;font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:0.85rem 1.5rem;text-align:left;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.06);}.mobile-menu button:hover,.mobile-menu button.active{color:var(--gold);background:rgba(255,255,255,0.06);}@media (max-width:700px){:root{--nav-h:56px;}.nav-links{display:none;}.hamburger{display:flex;}.nav-logo{font-size:1.1rem;letter-spacing:1px;}.hero{padding:1.25rem 1rem 1rem;}.hero h1{font-size:clamp(1.8rem,8vw,2.8rem);letter-spacing:2px;}.hero .subtitle{font-size:0.8rem;letter-spacing:2px;margin:0.2rem 0 0.75rem;}.hero-badges{gap:0.4rem;}.badge{font-size:0.75rem;padding:0.3rem 0.75rem;}.section{padding:1.5rem 1rem;}.section-title{font-size:1.5rem;}.btn{padding:0.7rem 1.25rem;font-size:0.9rem;}.card{padding:1rem;}.form-grid,.admin-grid,.info-grid{grid-template-columns:1fr;}input,select,textarea{font-size:1rem;padding:0.7rem 0.75rem;}.event-row{grid-template-columns:80px 1fr;padding:0.6rem 0.9rem;gap:0.6rem;}.event-time{font-size:0.75rem;}.event-name{font-size:0.9rem;}.event-detail{font-size:0.8rem;}.day-header{font-size:1.3rem;padding:0.5rem 1rem;}.event-row[style*="1.4fr"]{grid-template-columns:1fr 0.8fr !important;}.tab-bar{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;}.tab-btn{white-space:nowrap;font-size:0.8rem;padding:0.5rem 0.9rem;}.accordion-header{font-size:0.95rem;padding:0.85rem 1rem;}.year-label{font-size:1.8rem;}.photo-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));}.card h3{font-size:1rem;}}</style>
 </head>
 <body>
-
 <nav>
   <div class="nav-logo" onclick="showPage('home')">Boys This Is Livin</div>
   <div class="nav-links">
     <button onclick="showPage('home')" id="nav-home" class="active">Home</button>
-    <button onclick="showPage('register')" id="nav-register">Register</button>
-    <button onclick="showPage('roommates')" id="nav-roommates">Rooms</button>
     <button onclick="showPage('schedule')" id="nav-schedule">Schedule</button>
+    <button onclick="showPage('admin')" id="nav-admin">Tee Times</button>
+    <button onclick="showPage('scores')" id="nav-scores">Scores</button>
+    <button onclick="showPage('scramblepage')" id="nav-scramblepage">Scramble</button>
+    <button onclick="showPage('rules')" id="nav-rules">Rules</button>
     <button onclick="showPage('history')" id="nav-history">History</button>
     <button onclick="showPage('accommodations')" id="nav-accommodations">Stay</button>
-    <button onclick="showPage('admin')" id="nav-admin">Admin</button>
     <button onclick="showPage('faqs')" id="nav-faqs">FAQs</button>
+    <button onclick="showPage('roommates')" id="nav-roommates">Rooms</button>
   </div>
   <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
 </nav>
-
 <div class="mobile-menu" id="mobile-menu">
   <button onclick="navTo('home')">Home</button>
-  <button onclick="navTo('register')">Register</button>
-  <button onclick="navTo('roommates')">Rooms</button>
   <button onclick="navTo('schedule')">Schedule</button>
+  <button onclick="navTo('admin')">Tee Times</button>
+  <button onclick="navTo('scores')">Scores</button>
+  <button onclick="navTo('scramblepage')">Scramble</button>
+  <button onclick="navTo('rules')">Rules</button>
   <button onclick="navTo('history')">History</button>
   <button onclick="navTo('accommodations')">Stay</button>
-  <button onclick="navTo('admin')">Admin</button>
   <button onclick="navTo('faqs')">FAQs</button>
+  <button onclick="navTo('roommates')">Rooms</button>
 </div>
-
-<!-- HOME -->
 <div class="page active" id="page-home">
   <div class="hero">
     <h1>Boys This Is Livin</h1>
-    <div class="subtitle">Annual Golf Trip · Shawnee on Delaware, PA</div>
+    <div class="subtitle">Annual Golf Trip – Shawnee Inn & Golf Resort, PA – est 1995</div>
     <div class="hero-badges">
-      <div class="badge">📍 <strong>Shawnee on Delaware</strong></div>
-      <div class="badge">📅 <strong>July 21–23, 2025</strong></div>
-      <div class="badge">⛳ <strong>36+ Holes</strong></div>
-      <div class="badge">🍺 <strong>Good Times Always</strong></div>
+      <a href="https://maps.google.com/?q=Shawnee+Inn+and+Golf+Resort,+1+River+Road,+Shawnee+on+Delaware,+PA+18356" target="_blank" rel="noopener" class="badge" style="text-decoration:none; cursor:pointer;">📍 <strong>Shawnee Golf Course</strong></a>
+      <div class="badge" id="home-hero-dates">📅 <strong>July 21–23, 2026</strong></div>
+      <a href="https://www.flipsnack.com/F9B967BBDC9/shawnee-score-card/full-view.html" target="_blank" rel="noopener" class="badge" style="text-decoration:none;">⛳ <strong>27 Holes</strong></a>
     </div>
   </div>
-
-  <div class="section">
-    <h2 class="section-title">Welcome Back, Boys</h2>
-    <!-- Photo stack — click exposed edge of back photo to bring to front -->
-    <div id="photo-stack" style="position:relative; width:100%; margin:0 auto 2.5rem; aspect-ratio:16/9; padding-right:44px; padding-bottom:44px; box-sizing:border-box;">
-
-      <!-- Photo 1: Shawnee Inn -->
-      <div id="photo-card-0"
-        style="position:absolute; top:0; left:0; right:44px; bottom:44px; border-radius:4px; overflow:hidden;
-               box-shadow:0 4px 18px rgba(0,0,0,0.25); transition:all 0.25s; z-index:2;">
-        <img src="shawnee_inn.png" alt="Shawnee Inn"
-          style="width:100%; height:100%; object-fit:cover; object-position:center 30%; display:block;">
-        <div style="position:absolute; inset:0; display:flex; align-items:flex-end; justify-content:center; padding-bottom:0.2%; pointer-events:none;">
-          <span style="font-family:'Cinzel',serif; font-weight:900; font-size:clamp(1.2rem,3.4vw,2.3rem); letter-spacing:0.05em; color:rgba(255,255,255,0.42);">SHP</span>
-        </div>
-        <div style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(transparent,rgba(0,0,0,0.65)); padding:0.6rem 0.9rem; display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="bringToFront(0)">
-          <span style="color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:0.8rem; letter-spacing:1px; text-transform:uppercase;">Shawnee Inn &amp; Golf Resort</span>
-          <span style="color:rgba(255,255,255,0.6); font-family:'Barlow Condensed',sans-serif; font-size:0.75rem;">tap to front</span>
-        </div>
-      </div>
-
-      <!-- Photo 2: Team Photo — always offset bottom-right, clickable strip always exposed -->
-      <div id="photo-card-1"
-        style="position:absolute; top:44px; left:44px; right:0; bottom:0; border-radius:4px; overflow:hidden;
-               box-shadow:0 4px 18px rgba(0,0,0,0.25); transition:all 0.25s; z-index:1; cursor:pointer;"
-        onclick="bringToFront(1)">
-        <img src="team_photo_2025.jpg" alt="Boys This Is Livin — July 2025"
-          style="width:100%; height:100%; object-fit:contain; object-position:center; background:#1a3818; display:block;">
-        <div style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(transparent,rgba(0,0,0,0.65)); padding:0.6rem 0.9rem; display:flex; justify-content:space-between; align-items:center;">
-          <span style="color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:0.8rem; letter-spacing:1px; text-transform:uppercase;">July 2025</span>
-          <span style="color:rgba(255,255,255,0.6); font-family:'Barlow Condensed',sans-serif; font-size:0.75rem;">tap to front</span>
-        </div>
-      </div>
-
-    </div>
-    <p style="color:var(--text-muted); line-height:1.8; font-size:1rem;">
-      Welcome to the official home of the Boys This Is Livin golf trip — where the golf is loose, the company is tight, and the memories last forever. Use this site to register, check the schedule, find your roommate, and relive the glory years.
+<div class="section">
+    <h2 class="section-title" id="home-welcome-heading">Welcome Back, Boys</h2>
+    <p style="color:var(--text-muted); line-height:1.8; font-size:1rem;" id="home-welcome-body">
+      Another year, another excuse to ditch responsibilities and play bad golf with good people. Welcome back to the official (and only slightly over-engineered) home of the Boys This Is Livin golf trip. Check the schedule, find your roommate, and start trash talking now.
     </p>
     <div style="display:flex; gap:1rem; margin-top:1.5rem; flex-wrap:wrap;">
       <button class="btn btn-gold" onclick="showPage('schedule')">View Schedule</button>
-      <button class="btn btn-gold" onclick="showPage('roommates')">Room Mate List</button>
+      <button class="btn btn-gold" onclick="showPage('scores')">Scores</button>
+      <button class="btn" onclick="showPage('milkrun')" style="background:var(--gold); color:var(--green-dark); border:2px solid var(--brown);">🍶 Milk Run Award</button>
+
     </div>
   </div>
-
-  <div class="section">
+<div class="section">
     <h2 class="section-title">Quick Links</h2>
     <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr)); gap:0.75rem;">
-      <div class="card" style="cursor:pointer; border-left-color:var(--gold);" onclick="showPage('register')">
-        <h3>📋 Register</h3><p>Add your name, RSVP, pick your room.</p>
-      </div>
       <div class="card" style="cursor:pointer;" onclick="showPage('schedule')">
-        <h3>📅 Schedule</h3><p>Full 3-day event schedule.</p>
+        <h3>📅 Schedule</h3><p id="home-ql-schedule">When to show up. When to tee off. When dinner is.</p>
       </div>
       <div class="card" style="cursor:pointer;" onclick="showPage('history')">
-        <h3>🏆 History</h3><p>Past years, photos, attendees.</p>
+        <h3>🏆 Hall of Fame</h3><p id="home-ql-history">The glory years. Every trip, every guy, every memory.</p>
       </div>
       <div class="card" style="cursor:pointer;" onclick="showPage('accommodations')">
-        <h3>🏨 Stay</h3><p>Shawnee info &amp; local spots.</p>
+        <h3>🏨 Where We're Staying</h3><p id="home-ql-stay">Shawnee info, local bars, and where to eat.</p>
       </div>
+      <a href="https://www.weather.com/weather/tenday/l/18356" target="_blank" rel="noopener" style="text-decoration:none;">
+        <div class="card" style="cursor:pointer;">
+          <h3>🌤 Weather</h3><p>Current forecast for Shawnee Golf Course, PA.</p>
+        </div>
+      </a>
     </div>
   </div>
 </div>
 
-<!-- ROOMMATES -->
+<div class="page" id="page-milkrun">
+  <div class="section">
+    <h2 class="section-title">🍶 The Coveted Milk Run Award</h2>
+
+    <div class="card" style="border-left:4px solid var(--gold); margin-bottom:1.5rem; background:linear-gradient(135deg,#fffdf5,#fff8e8);">
+      <h3 style="font-size:1.3rem; margin-bottom:0.75rem; color:var(--green-dark);">The Legend</h3>
+      <p style="line-height:1.8; color:var(--text-muted);">
+        <span id="milkrun-legend-p1">Every great tradition has an origin story. The Milk Run Award was born from one of those late-night moments that only happens on a golf trip — when somebody, somehow, ended up on a milk run at an hour that shall not be spoken of, in a condition that shall not be described, retrieving provisions that shall not be questioned.</span>
+      </p>
+      <p style="line-height:1.8; color:var(--text-muted); margin-top:0.75rem;">
+        <span id="milkrun-legend-p2">Since that fateful night, the Milk Run Award has been presented each year to the individual who best exemplifies the spirit of the run: selfless service, questionable judgment, and an unwavering commitment to the crew — no matter the hour, no matter the cost.</span>
+      </p>
+      <p style="line-height:1.8; color:var(--text-muted); margin-top:0.75rem;">
+        <span id="milkrun-legend-p3">It is not the most prestigious award on the trip. It may, however, be the most important.</span>
+      </p>
+    </div>
+
+    <div class="card" style="border-left:4px solid var(--green); margin-bottom:1.5rem;">
+      <h3 style="margin-bottom:0.5rem;">📜 The Criteria</h3>
+      <ul id="milkrun-criteria" style="padding-left:1.2rem; color:var(--text-muted); line-height:2;">
+        <li>Must have gone above and beyond for the group — unsolicited</li>
+        <li>Bonus points for late-night heroics, food runs, or supply missions</li>
+        <li>Extra credit for doing so in a compromised state</li>
+        <li>Winner selected by group vote (or commissioner override)</li>
+      </ul>
+    </div>
+
+    <h2 class="section-title" style="margin-top:2rem;">🏆 Past Winners</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th>Winner</th>
+            <th>The Incident</th>
+          </tr>
+        </thead>
+        <tbody id="milkrun-winners-body">
+        </tbody>
+      </table>
+    </div>
+
+    <div style="background:var(--white); border:1px solid #ddd; border-radius:4px; padding:1.25rem; margin-top:1.5rem;">
+      <h3 style="font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--green-dark); margin-bottom:1rem;">Add a Winner</h3>
+      <div class="form-grid">
+        <div class="form-group"><label>Year</label><input type="text" id="milkrun-year" placeholder="e.g. 2024"></div>
+        <div class="form-group"><label>Winner</label><input type="text" id="milkrun-winner" placeholder="Player name"></div>
+        <div class="form-group full"><label>The Incident</label><input type="text" id="milkrun-incident" placeholder="What happened?"></div>
+      </div>
+      <button class="btn btn-gold" style="margin-top:0.75rem;" onclick="addMilkRunWinner()">Add Winner</button>
+    </div>
+  </div>
+</div>
+
 <div class="page" id="page-roommates">
   <div class="section">
     <h2 class="section-title">Room Assignments</h2>
@@ -454,81 +168,15 @@
     </div>
   </div>
 </div>
-
-<!-- REGISTRATION -->
-<div class="page" id="page-register">
-  <div class="section">
-    <h2 class="section-title">Registration</h2>
-
-    <div class="card" style="margin-bottom:1.5rem;">
-      <h3>📍 Event Details</h3>
-      <p>Shawnee on Delaware, PA &nbsp;|&nbsp; Date TBD &nbsp;|&nbsp;
-        <a href="https://maps.google.com/?q=Shawnee+on+Delaware+PA" target="_blank" style="color:var(--green);">Get Directions ↗</a>
-      </p>
-    </div>
-
-    <div style="background:var(--white); border:1px solid #ddd; border-radius:4px; padding:1.5rem; margin-bottom:1.5rem;">
-      <h3 style="font-family:'Barlow Condensed',sans-serif; font-size:1.1rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--green-dark); margin-bottom:1rem;">Your Information</h3>
-      <div class="form-grid" id="reg-form">
-        <div class="form-group"><label>First Name</label><input type="text" placeholder="First" id="fname"></div>
-        <div class="form-group"><label>Middle Initial</label><input type="text" placeholder="M" maxlength="2" id="mi"></div>
-        <div class="form-group"><label>Last Name</label><input type="text" placeholder="Last" id="lname"></div>
-        <div class="form-group"><label>Suffix</label><input type="text" placeholder="Jr., Sr., III…" id="suffix"></div>
-        <div class="form-group"><label>Email</label><input type="email" placeholder="email@example.com" id="email"></div>
-        <div class="form-group"><label>Cell Number</label><input type="tel" placeholder="(555) 555-5555" id="cell"></div>
-        <div class="form-group full">
-          <label>Attendance</label>
-          <select id="attendance">
-            <option>Will Attend</option>
-            <option>Will Not Attend</option>
-            <option>Undecided</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <div style="background:var(--white); border:1px solid #ddd; border-radius:4px; padding:1.5rem; margin-bottom:1.5rem;">
-      <h3 style="font-family:'Barlow Condensed',sans-serif; font-size:1.1rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--green-dark); margin-bottom:1rem;">Accommodations</h3>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Nights Staying</label>
-          <select id="nights">
-            <option>1 Night (Fri–Sat)</option>
-            <option>2 Nights (Thu–Sat)</option>
-            <option>Not Staying</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Room Type</label>
-          <select id="room-type">
-            <option>Single</option>
-            <option>Double</option>
-          </select>
-        </div>
-        <div class="form-group full">
-          <label>Roommate (if known)</label>
-          <input type="text" placeholder="Roommate's name" id="roommate">
-        </div>
-      </div>
-    </div>
-
-    <button class="btn btn-gold" onclick="submitReg()">Submit Registration</button>
-    <div class="success-msg" id="reg-success">✅ Registration submitted! You're on the list, brother.</div>
-  </div>
-</div>
-
-<!-- SCHEDULE -->
 <div class="page" id="page-schedule">
   <div class="section">
     <h2 class="section-title">Event Schedule</h2>
-
-    <div class="card" style="border-left-color:var(--gold); margin-bottom:2rem;">
-      <h3>📍 Shawnee on Delaware, PA</h3>
-      <p>All tee times, meals, and events subject to final confirmation. Check back for updates.</p>
+<div class="card" style="border-left-color:var(--gold); margin-bottom:2rem;">
+      <h3><a href="https://maps.google.com/?q=Shawnee+Inn+and+Golf+Resort,+1+River+Road,+Shawnee+on+Delaware,+PA+18356" target="_blank" rel="noopener" style="color:inherit; text-decoration:none;">📍 Shawnee Golf Course, PA ↗</a></h3>
+      <p id="schedule-notice">All tee times, meals, and events subject to final confirmation. Check back for updates.</p>
     </div>
-
-    <div class="day-block">
-      <div class="day-header">Day 1 — Tuesday, July 21 (Arrival)</div>
+<div class="day-block">
+      <div class="day-header" id="schedule-day1-header">Day 1 — Tuesday, July 21 (Arrival)</div>
       <div class="day-events">
         <div class="event-row"><div class="event-time">All Day</div><div><div class="event-name">Arrival</div><div class="event-detail"><span class="tag tag-admin">Check-in</span>Check in at front desk. Roommate list at reception.</div></div></div>
         <div class="event-row"><div class="event-time">Morning</div><div><div class="event-name">Breakfast — On Your Own</div><div class="event-detail"><span class="tag tag-meal">Meal</span>See accommodations for nearby options.</div></div></div>
@@ -539,9 +187,8 @@
         <div class="event-row"><div class="event-time">Evening</div><div><div class="event-name">Scramble Team Selection</div><div class="event-detail"><span class="tag tag-admin">Admin</span>Teams selected for Day 2 Scramble. Prize announcements by Angelo.</div></div></div>
       </div>
     </div>
-
-    <div class="day-block">
-      <div class="day-header">Day 2 — Wednesday, July 22</div>
+<div class="day-block">
+      <div class="day-header" id="schedule-day2-header">Day 2 — Wednesday, July 22</div>
       <div class="day-events">
         <div class="event-row"><div class="event-time">Morning</div><div><div class="event-name">Breakfast — Included</div><div class="event-detail"><span class="tag tag-meal">Meal</span>See accommodations for details.</div></div></div>
         <div class="event-row"><div class="event-time">Morning</div><div><div class="event-name">Morning Golf (Day 2 Tee Times)</div><div class="event-detail"><span class="tag tag-golf">Golf</span>Day 2 AM tee times — see website. Format / tees TBD.</div></div></div>
@@ -551,17 +198,15 @@
         <div class="event-row"><div class="event-time">Evening</div><div><div class="event-name">Dinner — Included</div><div class="event-detail"><span class="tag tag-meal">Dinner</span><span class="tag tag-social">Social</span>Location / time TBD. Opening remarks, individual introductions, winners &amp; prizes, table gifts, Blitz. Day 3 tee time selection.</div></div></div>
       </div>
     </div>
-
-    <div class="day-block">
-      <div class="day-header">Day 3 — Thursday, July 23 (Checkout)</div>
+<div class="day-block">
+      <div class="day-header" id="schedule-day3-header">Day 3 — Thursday, July 23 (Checkout)</div>
       <div class="day-events">
         <div class="event-row"><div class="event-time">Morning</div><div><div class="event-name">Breakfast — Included</div><div class="event-detail"><span class="tag tag-meal">Meal</span>See accommodations.</div></div></div>
         <div class="event-row"><div class="event-time">Morning</div><div><div class="event-name">Morning Golf (Day 3 Tee Times)</div><div class="event-detail"><span class="tag tag-golf">Golf</span>Day 3 AM tee times — see website. Format / tees TBD.</div></div></div>
         <div class="event-row"><div class="event-time">Midday</div><div><div class="event-name">Lunch — On Your Own</div><div class="event-detail"><span class="tag tag-meal">Meal</span>See accommodations for local options.</div></div></div>
       </div>
     </div>
-
-    <div class="card" style="border-left-color:var(--gold);">
+<div class="card" style="border-left-color:var(--gold);">
       <h3>🏆 Prizes Awarded For</h3>
       <ul style="margin-top:0.5rem;">
         <li>Blitz (each evening)</li>
@@ -572,47 +217,25 @@
     </div>
   </div>
 </div>
-
-<!-- HISTORY -->
 <div class="page" id="page-history">
   <div class="section">
     <h2 class="section-title">Trip History</h2>
-
-    <div class="accordion">
-      <button class="accordion-header" onclick="toggleAccordion(this)">
-        About This Trip <span class="chevron">▼</span>
-      </button>
-      <div class="accordion-body">
-        <p>Boys This Is Livin is an annual golf trip tradition. What started as a few guys hitting the links has grown into a full multi-day event at Shawnee on Delaware. This page celebrates every year, every attendee, and everyone who made it special.</p>
-      </div>
+<div class="tab-bar">
+      <button class="tab-btn active" onclick="showHistoryTab('history-trip',this)">Trip History</button>
+      <button class="tab-btn" onclick="showHistoryTab('history-yoy',this)">Year Over Year</button>
+      <button class="tab-btn" onclick="showHistoryTab('history-winners',this)">Winners</button>
     </div>
-
-    <div class="year-section" style="margin-top:2rem;">
-      <div class="year-label">2024</div>
-      <div class="photo-grid" id="photo-grid-2024">
-        <div class="photo-placeholder">📸</div>
-        <div class="photo-placeholder">📸</div>
-        <div class="photo-placeholder">📸</div>
-        <div class="photo-placeholder">📸</div>
-        <div class="photo-placeholder" style="display:flex; flex-direction:column; gap:0.3rem; font-size:0.8rem; color:rgba(255,255,255,0.6);">
-          <span style="font-size:1.5rem;">+</span>Upload
+<div class="history-tab-panel active" id="tab-history-trip">
+      <div class="accordion">
+        <button class="accordion-header" onclick="toggleAccordion(this)">
+          About This Trip <span class="chevron">▼</span>
+        </button>
+        <div class="accordion-body">
+          <p id="history-about">Boys This Is Livin started as a few guys hitting the links and somehow turned into a full-blown annual tradition. This page is the archive — every year, every face, every round. If you've been on this trip, you know. If you haven't, you're missing out.</p>
         </div>
       </div>
-      <div class="attendee-chips" id="chips-2024"></div>
     </div>
-
-    <div class="year-section">
-      <div class="year-label">2023</div>
-      <div class="photo-grid">
-        <div class="photo-placeholder">📸</div>
-        <div class="photo-placeholder">📸</div>
-        <div class="photo-placeholder">📸</div>
-      </div>
-      <div class="attendee-chips" id="chips-2023"></div>
-    </div>
-
-    <div class="year-section">
-      <div class="year-label">Year Over Year</div>
+<div class="history-tab-panel" id="tab-history-yoy">
       <div class="table-wrap">
         <table>
           <thead><tr><th>Attendee</th><th>Years Attended</th><th>Total Trips</th></tr></thead>
@@ -620,26 +243,28 @@
         </table>
       </div>
     </div>
-
-    <div class="card" style="border-left-color:#9e1a1a; margin-top:1.5rem;">
-      <h3 style="color:#9e1a1a;">🕊️ In Memoriam</h3>
-      <p>We remember those who made this trip special. Their spirit lives on every time we tee it up.</p>
+<div class="history-tab-panel" id="tab-history-winners">
+      <div style="background:var(--white); border:1px solid #ddd; border-radius:4px; padding:1.25rem; margin-bottom:1rem;">
+        <div class="form-grid">
+          <div class="form-group"><label>Event</label><input type="text" id="winner-event" placeholder="Blitz, Closest to Pin…"></div>
+          <div class="form-group"><label>Winner</label><input type="text" id="winner-name" placeholder="Player name"></div>
+          <div class="form-group full"><label>Description</label><input type="text" id="winner-desc" placeholder="Optional details…"></div>
+        </div>
+        <button class="btn btn-gold" style="margin-top:0.75rem;" onclick="addWinner()">Add Winner</button>
+      </div>
+      <div id="winners-list"></div>
     </div>
-  </div>
 </div>
-
-<!-- ACCOMMODATIONS -->
+</div>
 <div class="page" id="page-accommodations">
   <div class="section">
     <h2 class="section-title">Accommodations & Local Info</h2>
-
-    <div class="card" style="border-left-color:var(--gold); margin-bottom:1.5rem;">
-      <h3>🏨 Shawnee on Delaware</h3>
-      <p>Shawnee Inn and Golf Resort &nbsp;|&nbsp; 1 River Road, Shawnee on Delaware, PA 18356</p>
+<div class="card" style="border-left-color:var(--gold); margin-bottom:1.5rem;">
+      <h3>🏨 <a href="https://www.shawneeinn.com/" target="_blank" rel="noopener" style="color:inherit; text-decoration:none;">Shawnee Inn and Golf Resort ↗</a></h3>
+      <p>1 River Road, Shawnee-on-Delaware, PA 18356</p>
       <p style="margin-top:0.4rem;"><a href="https://maps.google.com/?q=Shawnee+Inn+Golf+Resort+PA" target="_blank" style="color:var(--green);">Get Directions ↗</a></p>
     </div>
-
-    <div class="info-grid">
+<div class="info-grid">
       <div class="info-card">
         <h3>⛳ Course Info</h3>
         <ul>
@@ -681,25 +306,20 @@
     </div>
   </div>
 </div>
-
-<!-- ADMIN -->
 <div class="page" id="page-admin">
   <div class="section">
-    <h2 class="section-title">Administration</h2>
-
-    <div class="tab-bar">
-      <button class="tab-btn active" onclick="showTab('scores',this)">Scores</button>
+    <h2 class="section-title">Tee Times</h2>
+<div class="tab-bar">
+      <button class="tab-btn active" onclick="showTab('teetimes',this)">Wed 7/22 Tee Times</button>
       <button class="tab-btn" onclick="showTab('scramble',this)">Scramble Teams</button>
-      <button class="tab-btn" onclick="showTab('teetimes',this)">Tee Times</button>
-      <button class="tab-btn" onclick="showTab('rules',this)">Rules</button>
-      <button class="tab-btn" onclick="showTab('winners',this)">Winners</button>
+      <button class="tab-btn" onclick="showTab('teetimes2',this)">Thu 7/23 Tee Times</button>
+      <button class="tab-btn" onclick="showTab('scores',this)">Scores</button>
     </div>
-
-    <div class="tab-panel active" id="tab-scores">
-      <h3 style="font-family:'Barlow Condensed',sans-serif; font-size:1.1rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--green-dark); margin-bottom:1rem;">Scramble Player Scores</h3>
+<div class="tab-panel" id="tab-scores">
+      <h3 style="font-family:'Barlow Condensed',sans-serif; font-size:1.1rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--green-dark); margin-bottom:1rem;">Player Scores</h3>
       <div class="table-wrap" style="margin-bottom:1rem;">
         <table>
-          <thead><tr><th>Player</th><th>Round 1</th><th>Round 2</th><th>Scramble</th><th>Total</th><th>Edit</th></tr></thead>
+          <thead><tr><th>Player</th><th>7/22 Morning Round</th><th>7/22 Optional Round</th><th>7/23 Morning Round</th><th>Edit</th></tr></thead>
           <tbody id="scores-body"></tbody>
         </table>
       </div>
@@ -707,59 +327,76 @@
         <button class="btn" onclick="window.print()">🖨 Print Scores</button>
       </div>
     </div>
-
-    <div class="tab-panel" id="tab-scramble">
+<div class="tab-panel active" id="tab-teetimes">
+      <h3 style="font-family:'Barlow Condensed',sans-serif; font-size:1.1rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--green-dark); margin-bottom:1rem;">Wed 7/22 Tee Times</h3>
+      <div id="teetimes-list"></div>
+      <div style="display:flex; gap:0.75rem; margin-top:1rem; flex-wrap:wrap;">
+        <button class="btn btn-gold" onclick="saveTeeTimes()">💾 Save Changes</button>
+        <button class="btn" onclick="window.print()">🖨 Print Tee Times</button>
+      </div>
+    </div>
+<div class="tab-panel" id="tab-scramble">
       <h3 style="font-family:'Barlow Condensed',sans-serif; font-size:1.1rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--green-dark); margin-bottom:1rem;">Scramble Teams & Tee Times</h3>
       <div id="scramble-teams"></div>
-      <button class="btn" style="margin-top:1rem;" onclick="window.print()">🖨 Print Teams</button>
-    </div>
-
-    <div class="tab-panel" id="tab-teetimes">
-      <h3 style="font-family:'Barlow Condensed',sans-serif; font-size:1.1rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--green-dark); margin-bottom:1rem;">Day 2 AM Tee Times</h3>
-      <div id="teetimes-list"></div>
-      <button class="btn" style="margin-top:1rem;" onclick="window.print()">🖨 Print Tee Times</button>
-    </div>
-
-    <div class="tab-panel" id="tab-rules">
-      <h3 style="font-family:'Barlow Condensed',sans-serif; font-size:1.1rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--green-dark); margin-bottom:1rem;">Event Rules</h3>
-      <div class="accordion">
-        <button class="accordion-header" onclick="toggleAccordion(this)">Blitz Rules <span class="chevron">▼</span></button>
-        <div class="accordion-body"><p>Blitz rules TBD — to be set by Angelo before the trip. Points awarded per hole. All disputes settled by the group.</p></div>
-      </div>
-      <div class="accordion">
-        <button class="accordion-header" onclick="toggleAccordion(this)">Scramble Rules <span class="chevron">▼</span></button>
-        <div class="accordion-body"><ul><li>Teams of 4 — selected at Day 1 dinner</li><li>Each player hits, team selects best shot</li><li>All players hit from selected spot</li><li>Each player must contribute minimum 4 drives</li><li>Teams go out when all 4 members at halfway house</li><li>Format / cost TBD</li></ul></div>
-      </div>
-      <div class="accordion">
-        <button class="accordion-header" onclick="toggleAccordion(this)">Afternoon Match Rules <span class="chevron">▼</span></button>
-        <div class="accordion-body"><p>Match format, rules, and cost to be announced. See Angelo for details.</p></div>
+      <div style="display:flex; gap:0.75rem; margin-top:1rem; flex-wrap:wrap;">
+        <button class="btn btn-gold" onclick="saveScrambleTeams()">💾 Save Changes</button>
+        <button class="btn" onclick="window.print()">🖨 Print Teams</button>
       </div>
     </div>
-
-    <div class="tab-panel" id="tab-winners">
-      <h3 style="font-family:'Barlow Condensed',sans-serif; font-size:1.1rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--green-dark); margin-bottom:1rem;">Wednesday Night Winners</h3>
-      <div style="background:var(--white); border:1px solid #ddd; border-radius:4px; padding:1.25rem; margin-bottom:1rem;">
-        <div class="form-grid">
-          <div class="form-group"><label>Event</label><input type="text" id="winner-event" placeholder="Blitz, Closest to Pin…"></div>
-          <div class="form-group"><label>Winner</label><input type="text" id="winner-name" placeholder="Player name"></div>
-          <div class="form-group full"><label>Description</label><input type="text" id="winner-desc" placeholder="Optional details…"></div>
-        </div>
-        <button class="btn btn-gold" style="margin-top:0.75rem;" onclick="addWinner()">Add Winner</button>
+<div class="tab-panel" id="tab-teetimes2">
+      <h3 style="font-family:'Barlow Condensed',sans-serif; font-size:1.1rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--green-dark); margin-bottom:1rem;">Thu 7/23 Tee Times</h3>
+      <div id="teetimes2-list"></div>
+      <div style="display:flex; gap:0.75rem; margin-top:1rem; flex-wrap:wrap;">
+        <button class="btn btn-gold" onclick="saveTeeTimes2()">💾 Save Changes</button>
+        <button class="btn" onclick="window.print()">🖨 Print Tee Times</button>
       </div>
-      <div id="winners-list"></div>
     </div>
   </div>
 </div>
-
-<!-- FAQS -->
+<div class="page" id="page-scores">
+  <div class="section">
+    <h2 class="section-title">Player Scores</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Player</th><th>7/22 Morning Round</th><th>7/22 Optional Round</th><th>7/23 Morning Round</th></tr></thead>
+        <tbody id="public-scores-body"></tbody>
+      </table>
+    </div>
+    <div style="display:flex; gap:0.75rem; margin-top:1rem;">
+      <button class="btn" onclick="window.print()">🖨 Print Scores</button>
+    </div>
+  </div>
+</div>
+<div class="page" id="page-scramblepage">
+  <div class="section">
+    <h2 class="section-title">Scramble Teams</h2>
+    <div id="scramblepage-teams"></div>
+  </div>
+</div>
+<div class="page" id="page-rules">
+  <div class="section">
+    <h2 class="section-title">Event Rules</h2>
+    <div class="accordion">
+      <button class="accordion-header" onclick="toggleAccordion(this)">Blitz Rules <span class="chevron">▼</span></button>
+      <div class="accordion-body"><p id="rules-blitz">Blitz rules TBD — to be set by Angelo before the trip. Points awarded per hole. All disputes settled by the group.</p></div>
+    </div>
+    <div class="accordion">
+      <button class="accordion-header" onclick="toggleAccordion(this)">Scramble Rules <span class="chevron">▼</span></button>
+      <div class="accordion-body"><ul><li>Teams of 4 — selected at Day 1 dinner</li><li>Each player hits, team selects best shot</li><li>All players hit from selected spot</li><li>Each player must contribute minimum 4 drives</li><li>Teams go out when all 4 members at halfway house</li><li>Format / cost TBD</li></ul></div>
+    </div>
+    <div class="accordion">
+      <button class="accordion-header" onclick="toggleAccordion(this)">Afternoon Match Rules <span class="chevron">▼</span></button>
+      <div class="accordion-body"><p id="rules-match">Match format, rules, and cost to be announced. See Angelo for details.</p></div>
+    </div>
+  </div>
+</div>
 <div class="page" id="page-faqs">
   <div class="section">
     <h2 class="section-title">FAQs</h2>
-
-    <div class="accordion">
+<div class="accordion">
       <button class="accordion-header" onclick="toggleAccordion(this)">What to Bring <span class="chevron">▼</span></button>
       <div class="accordion-body">
-        <ul>
+        <ul id="faq-bring">
           <li>Golf clubs &amp; bag</li>
           <li>Golf shoes (soft spikes)</li>
           <li>Collared shirts for the course</li>
@@ -771,23 +408,20 @@
         </ul>
       </div>
     </div>
-
-    <div class="accordion">
+<div class="accordion">
       <button class="accordion-header" onclick="toggleAccordion(this)">What NOT to Bring <span class="chevron">▼</span></button>
-      <div class="accordion-body">
-        <ul>
-          <li>Excuses for your golf game</li>
+      <div class="accordion-body"><ul id="faq-not-bring">
+          <li>Excuses for your golf game (we've heard them all)</li>
           <li>Metal spike shoes</li>
-          <li>Your significant other (this is the trip)</li>
-          <li>Anything you can't lose</li>
+          <li>Your significant other — this is sacred ground</li>
+          <li>Anything you'd be upset to lose in a Blitz bet</li>
         </ul>
       </div>
     </div>
-
-    <div class="accordion">
+<div class="accordion">
       <button class="accordion-header" onclick="toggleAccordion(this)">Shawnee Course Rules <span class="chevron">▼</span></button>
       <div class="accordion-body">
-        <ul>
+        <ul id="faq-course-rules">
           <li>Collared shirts required on the course</li>
           <li>Soft spike shoes only</li>
           <li>Pace of play: keep it moving</li>
@@ -797,11 +431,10 @@
         </ul>
       </div>
     </div>
-
-    <div class="accordion">
+<div class="accordion">
       <button class="accordion-header" onclick="toggleAccordion(this)">Where NOT to Smoke <span class="chevron">▼</span></button>
       <div class="accordion-body">
-        <ul>
+        <ul id="faq-smoking">
           <li>Inside resort rooms or common areas</li>
           <li>On the greens or near the tee boxes</li>
           <li>Designated smoke-free zones on property</li>
@@ -809,11 +442,10 @@
         </ul>
       </div>
     </div>
-
-    <div class="accordion">
+<div class="accordion">
       <button class="accordion-header" onclick="toggleAccordion(this)">General FAQs <span class="chevron">▼</span></button>
       <div class="accordion-body">
-        <ul>
+        <ul id="faq-general">
           <li><strong>Can I bring a guest?</strong> Talk to Angelo first.</li>
           <li><strong>Handicaps?</strong> Just play your tees and have fun.</li>
           <li><strong>Is there a deposit?</strong> Accommodation payment details TBD — watch your email.</li>
@@ -823,7 +455,6 @@
     </div>
   </div>
 </div>
-
 <script>
 const roommateData = [
   { name:"Fred Lipkin", nights:"1 Night", room:"Single", roommate:"—", status:"In" },
@@ -864,19 +495,6 @@ const roommateData = [
   { name:"Eric Stanwood", nights:"—", room:"—", roommate:"—", status:"In" },
 ];
 
-
-function bringToFront(idx) {
-  const card0 = document.getElementById('photo-card-0');
-  const card1 = document.getElementById('photo-card-1');
-  if (idx === 0) {
-    card0.style.top='0'; card0.style.left='0'; card0.style.right='44px'; card0.style.bottom='44px'; card0.style.zIndex='2';
-    card1.style.top='44px'; card1.style.left='44px'; card1.style.right='0'; card1.style.bottom='0'; card1.style.zIndex='1';
-  } else {
-    card1.style.top='0'; card1.style.left='0'; card1.style.right='44px'; card1.style.bottom='44px'; card1.style.zIndex='2';
-    card0.style.top='44px'; card0.style.left='44px'; card0.style.right='0'; card0.style.bottom='0'; card0.style.zIndex='1';
-  }
-}
-
 function buildRoommateTable() {
   const tbody = document.getElementById('roommate-table-body');
   tbody.innerHTML = roommateData.map((r, i) => `
@@ -890,56 +508,159 @@ function buildRoommateTable() {
   `).join('');
 }
 
+/* scores store: { name, r1, r2, r3 } */
+const scoresData = roommateData.map(r => ({ name: r.name, r1:'', r2:'', r3:'' }));
+
 function buildScoresTable() {
   const tbody = document.getElementById('scores-body');
-  tbody.innerHTML = roommateData.slice(0,12).map(r => `
+  tbody.innerHTML = scoresData.map((s,i) => `
     <tr>
-      <td>${r.name}</td>
-      <td><input type="number" style="width:60px; padding:2px 6px;" placeholder="—"></td>
-      <td><input type="number" style="width:60px; padding:2px 6px;" placeholder="—"></td>
-      <td><input type="number" style="width:60px; padding:2px 6px;" placeholder="—"></td>
-      <td>—</td>
-      <td><button class="btn" style="font-size:0.75rem; padding:3px 10px;">Save</button></td>
+      <td>${s.name}</td>
+      <td><input type="number" style="width:60px; padding:2px 6px;" placeholder="—" value="${s.r1}" onchange="scoresData[${i}].r1=this.value; buildPublicScores();"></td>
+      <td><input type="number" style="width:60px; padding:2px 6px;" placeholder="—" value="${s.r2}" onchange="scoresData[${i}].r2=this.value; buildPublicScores();"></td>
+      <td><input type="number" style="width:60px; padding:2px 6px;" placeholder="—" value="${s.r3}" onchange="scoresData[${i}].r3=this.value; buildPublicScores();"></td>
+      <td><button class="btn" style="font-size:0.75rem; padding:3px 10px;" onclick="buildPublicScores()">Save</button></td>
     </tr>
   `).join('');
 }
 
+function buildPublicScores() {
+  const tbody = document.getElementById('public-scores-body');
+  if (!tbody) return;
+  tbody.innerHTML = scoresData.map((s,i) => `
+    <tr>
+      <td>${s.name}</td>
+      <td><input type="number" style="width:60px; padding:2px 6px;" placeholder="—" value="${s.r1}" onchange="scoresData[${i}].r1=this.value; syncAdminScores();"></td>
+      <td><input type="number" style="width:60px; padding:2px 6px;" placeholder="—" value="${s.r2}" onchange="scoresData[${i}].r2=this.value; syncAdminScores();"></td>
+      <td><input type="number" style="width:60px; padding:2px 6px;" placeholder="—" value="${s.r3}" onchange="scoresData[${i}].r3=this.value; syncAdminScores();"></td>
+    </tr>
+  `).join('');
+}
+
+function syncAdminScores() {
+  /* keep admin table inputs in sync if visible */
+  const adminBody = document.getElementById('scores-body');
+  if (!adminBody) return;
+  const rows = adminBody.querySelectorAll('tr');
+  scoresData.forEach((s, i) => {
+    if (!rows[i]) return;
+    const inputs = rows[i].querySelectorAll('input');
+    if (inputs[0]) inputs[0].value = s.r1;
+    if (inputs[1]) inputs[1].value = s.r2;
+    if (inputs[2]) inputs[2].value = s.r3;
+  });
+}
+
+/* ── Scramble Teams (10 teams of 4, fully editable) ── */
+const scrambleTeams = Array.from({length:10}, (_,i) => ({
+  tee: '',
+  players: ['','','','']
+}));
+/* all 10 teams start blank — filled in via Admin → Scramble Teams */
+
 function buildScrambleTeams() {
-  const teams = [
-    { tee: "8:00 AM", players: ["Angelo Giambattista","Andy Morris","Tim O'Malley","John Criscuola"] },
-    { tee: "8:10 AM", players: ["Ryan Murphy","Anthony Criscuola","Sigi Lembo","Mike Gallo"] },
-    { tee: "8:20 AM", players: ["Fred Lipkin","Cliff Michaels","Gary Holmes","Jim Revel"] },
-    { tee: "8:30 AM", players: ["Alex Lipkin","Matt Michaels","Helms Bohringer","Jim Poltriczky"] },
-  ];
-  document.getElementById('scramble-teams').innerHTML = teams.map((t,i) => `
+  document.getElementById('scramble-teams').innerHTML = scrambleTeams.map((t,i) => `
     <div class="card" style="margin-bottom:0.75rem;">
-      <h3>Team ${i+1} — Tee: ${t.tee}</h3>
-      <ul style="margin-top:0.5rem;">${t.players.map(p=>`<li>${p}</li>`).join('')}</ul>
+      <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.6rem; flex-wrap:wrap;">
+        <h3 style="margin:0; font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--green-dark);">Team ${i+1}</h3>
+        <label style="font-size:0.85rem; color:var(--text-muted); margin:0;">Tee Time:</label>
+        <input type="text" value="${t.tee}" placeholder="e.g. 8:00 AM"
+          style="width:100px; padding:3px 8px; font-size:0.85rem; border:1px solid #ccc; border-radius:3px;"
+          onchange="scrambleTeams[${i}].tee=this.value">
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.4rem;">
+        ${t.players.map((p,j) => `
+          <input type="text" value="${p}" placeholder="Player ${j+1}"
+            style="padding:4px 8px; font-size:0.875rem; border:1px solid #ccc; border-radius:3px;"
+            onchange="scrambleTeams[${i}].players[${j}]=this.value">
+        `).join('')}
+      </div>
     </div>
   `).join('');
 }
 
+function saveScrambleTeams() {
+  buildScrambleTeams();
+  const btn = event.target;
+  btn.textContent = '✅ Saved'; setTimeout(()=>btn.textContent='💾 Save Changes', 2000);
+}
+
+function buildScramblePage() {
+  const src = document.getElementById('scramble-teams');
+  const el  = document.getElementById('scramblepage-teams');
+  if (!el || !src) return;
+  el.innerHTML = src.innerHTML;
+}
+
+/* ── Tee Times (editable) ── */
+const teeTimesData = [
+  { tee:"7:40 AM", players:["Fred Lipkin","Alex Lipkin","Angelo DiCaro","Ralph Gamba"] },
+  { tee:"7:50 AM", players:["Andy Morris","Anthony Criscuola","John Sarni","Joe Sarni"] },
+  { tee:"8:00 AM", players:["Tim O'Malley","Paul Henning","Marty Glynn","Jason Manning"] },
+  { tee:"8:10 AM", players:["Cliff Michaels","Matt Michaels","Donovan Monteverdi","Aidan Monteverdi"] },
+  { tee:"8:20 AM", players:["Jim Revel","Jim Poltriczky","Helms Bohringer","Gary Holmes"] },
+];
+
 function buildTeeTimes() {
-  const times = [
-    { tee:"7:40 AM", players:["Fred Lipkin","Alex Lipkin","Angelo DiCaro","Ralph Gamba"] },
-    { tee:"7:50 AM", players:["Andy Morris","Anthony Criscuola","John Sarni","Joe Sarni"] },
-    { tee:"8:00 AM", players:["Tim O'Malley","Paul Henning","Marty Glynn","Jason Manning"] },
-    { tee:"8:10 AM", players:["Cliff Michaels","Matt Michaels","Donovan Monteverdi","Aidan Monteverdi"] },
-    { tee:"8:20 AM", players:["Jim Revel","Jim Poltriczky","Helms Bohringer","Gary Holmes"] },
-  ];
-  document.getElementById('teetimes-list').innerHTML = times.map(t => `
+  document.getElementById('teetimes-list').innerHTML = teeTimesData.map((t,i) => `
     <div class="card" style="margin-bottom:0.75rem;">
-      <h3>⏰ ${t.tee}</h3>
-      <ul style="margin-top:0.5rem;">${t.players.map(p=>`<li>${p}</li>`).join('')}</ul>
+      <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.6rem; flex-wrap:wrap;">
+        <span style="font-size:1.1rem;">⏰</span>
+        <label style="font-size:0.85rem; color:var(--text-muted); margin:0;">Tee Time:</label>
+        <input type="text" value="${t.tee}" placeholder="e.g. 7:40 AM"
+          style="width:100px; padding:3px 8px; font-size:0.85rem; border:1px solid #ccc; border-radius:3px;"
+          onchange="teeTimesData[${i}].tee=this.value">
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.4rem;">
+        ${t.players.map((p,j) => `
+          <input type="text" value="${p}" placeholder="Player ${j+1}"
+            style="padding:4px 8px; font-size:0.875rem; border:1px solid #ccc; border-radius:3px;"
+            onchange="teeTimesData[${i}].players[${j}]=this.value">
+        `).join('')}
+      </div>
     </div>
   `).join('');
+}
+
+function saveTeeTimes() {
+  buildTeeTimes();
+buildTeeTimes2();
+  const btn = event.target;
+  btn.textContent = '✅ Saved'; setTimeout(()=>btn.textContent='💾 Save Changes', 2000);
+}
+
+const teeTimesData2 = Array.from({length:5}, () => ({ tee:'', players:['','','',''] }));
+
+function buildTeeTimes2() {
+  document.getElementById('teetimes2-list').innerHTML = teeTimesData2.map((t,i) => `
+    <div class="card" style="margin-bottom:0.75rem;">
+      <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.6rem; flex-wrap:wrap;">
+        <span style="font-size:1.1rem;">⏰</span>
+        <label style="font-size:0.85rem; color:var(--text-muted); margin:0;">Tee Time:</label>
+        <input type="text" value="${t.tee}" placeholder="e.g. 7:40 AM"
+          style="width:100px; padding:3px 8px; font-size:0.85rem; border:1px solid #ccc; border-radius:3px;"
+          onchange="teeTimesData2[${i}].tee=this.value">
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.4rem;">
+        ${t.players.map((p,j) => `
+          <input type="text" value="${p}" placeholder="Player ${j+1}"
+            style="padding:4px 8px; font-size:0.875rem; border:1px solid #ccc; border-radius:3px;"
+            onchange="teeTimesData2[${i}].players[${j}]=this.value">
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function saveTeeTimes2() {
+  buildTeeTimes2();
+  const btn = event.target;
+  btn.textContent = '✅ Saved'; setTimeout(()=>btn.textContent='💾 Save Changes', 2000);
 }
 
 function buildHistory() {
   const names2024 = roommateData.slice(0,20).map(r=>r.name);
   const names2023 = roommateData.slice(0,16).map(r=>r.name);
-  document.getElementById('chips-2024').innerHTML = names2024.map(n=>`<div class="chip">${n}</div>`).join('');
-  document.getElementById('chips-2023').innerHTML = names2023.map(n=>`<div class="chip">${n}</div>`).join('');
   const tbody = document.getElementById('yoy-table');
   tbody.innerHTML = roommateData.map((r,i) => {
     const trips = Math.floor(Math.random()*8)+1;
@@ -981,14 +702,25 @@ function navTo(id) {
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-links button').forEach(b=>b.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  document.getElementById('nav-'+id).classList.add('active');
+  const page = document.getElementById('page-'+id);
+  if (page) page.classList.add('active');
+  const nav = document.getElementById('nav-'+id);
+  if (nav) nav.classList.add('active');
+  if (id === 'scores') buildPublicScores();
+  if (id === 'milkrun') buildMilkRunWinners();
+  if (id === 'scramblepage') buildScramblePage();
   window.scrollTo(0,0);
 }
 
 function showTab(id, el) {
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#page-admin .tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if (el) el.classList.add('active');
+}
+function showHistoryTab(id, el) {
+  document.querySelectorAll('.history-tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('#page-history .tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
   if (el) el.classList.add('active');
 }
@@ -1010,9 +742,111 @@ function submitReg() {
 
 buildRoommateTable();
 buildScoresTable();
+buildPublicScores();
 buildScrambleTeams();
 buildTeeTimes();
+buildTeeTimes2();
+
+const milkRunWinners = [
+  { year: '2023', winner: 'TBD', incident: 'The original run — the one that started it all.' },
+];
+function buildMilkRunWinners() {
+  const tbody = document.getElementById('milkrun-winners-body');
+  if (!tbody) return;
+  tbody.innerHTML = milkRunWinners.map(w => `
+    <tr>
+      <td style="font-family:'Barlow Condensed',sans-serif; font-weight:700; color:var(--gold); font-size:1.1rem;">${w.year}</td>
+      <td style="font-weight:600;">${w.winner}</td>
+      <td style="color:var(--text-muted);">${w.incident}</td>
+    </tr>
+  `).join('');
+}
+function addMilkRunWinner() {
+  const y = document.getElementById('milkrun-year').value.trim();
+  const w = document.getElementById('milkrun-winner').value.trim();
+  const i = document.getElementById('milkrun-incident').value.trim();
+  if (!y || !w) return;
+  milkRunWinners.unshift({year:y, winner:w, incident:i});
+  buildMilkRunWinners();
+  document.getElementById('milkrun-year').value='';
+  document.getElementById('milkrun-winner').value='';
+  document.getElementById('milkrun-incident').value='';
+}
+
 buildHistory();
 </script>
+
+<script>
+// ── Dynamic content from Google Sheets ──────────────────────────────────────
+// HOW TO USE:
+//   1. Make a copy of the template sheet (link below)
+//   2. File → Share → Publish to web → Sheet1 → CSV → Publish
+//   3. Paste the published CSV URL below as SHEET_CSV_URL
+//   4. Edit text in the sheet — changes appear on the site within seconds (no redeploy)
+//
+// Template sheet layout (two columns: key | value):
+//
+//   HOME PAGE
+//   home-welcome-heading   | Welcome Back, Boys
+//   home-welcome-body      | Another year ...
+//   home-hero-subtitle     | Annual Golf Trip – ...
+//   home-hero-dates        | 📅 <strong>July 21–23, 2026</strong>
+//   home-ql-schedule       | When to show up. When to tee off. When dinner is.
+//   home-ql-history        | The glory years. Every trip, every guy, every memory.
+//   home-ql-stay           | Shawnee info, local bars, and where to eat.
+//
+//   SCHEDULE PAGE
+//   schedule-notice        | All tee times, meals, and events subject to final confirmation...
+//   schedule-day1-header   | Day 1 — Tuesday, July 21 (Arrival)
+//   schedule-day2-header   | Day 2 — Wednesday, July 22
+//   schedule-day3-header   | Day 3 — Thursday, July 23 (Checkout)
+//
+//   RULES PAGE
+//   rules-blitz            | Blitz rules TBD — to be set by Angelo...
+//   rules-match            | Match format, rules, and cost to be announced...
+//
+//   HISTORY PAGE
+//   history-about          | Boys This Is Livin started as a few guys...
+//
+//   FAQs PAGE
+//   faq-bring              | <li>Golf clubs & bag</li><li>...</li>  (inner HTML of ul)
+//   faq-not-bring          | <li>Excuses...</li>
+//   faq-course-rules       | <li>Collared shirts required...</li>
+//   faq-smoking            | <li>Inside resort rooms...</li>
+//   faq-general            | <li><strong>Can I bring a guest?</strong>...</li>
+//
+//   MILK RUN AWARD PAGE
+//   milkrun-legend-p1      | Every great tradition has an origin story...
+//   milkrun-legend-p2      | Since that fateful night...
+//   milkrun-legend-p3      | It is not the most prestigious award...
+//   milkrun-criteria       | <li>Must have gone above and beyond...</li>  (inner HTML of ul)
+
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQB5DaeXCB71JJEirxddx3C5mJf8dGLMNoqVchwgwWb35gLY5BDwNiStZpUEW3-aU3PSwtAKSNyQjqV/pub?gid=485151315&single=true&output=csv'; // ← paste your published CSV URL here
+
+async function loadSheetContent() {
+  if (!SHEET_CSV_URL) return; // no URL set yet — use hardcoded defaults
+  try {
+    const res = await fetch(SHEET_CSV_URL);
+    if (!res.ok) return;
+    const text = await res.text();
+    const rows = text.trim().split('\n').slice(1); // skip header row
+    rows.forEach(row => {
+      // Handle quoted CSV values
+      const match = row.match(/^([^,]+),(.*)$/);
+      if (!match) return;
+      const key = match[1].trim().replace(/^"|"$/g, '');
+      const val = match[2].trim().replace(/^"|"$/g, '').replace(/""/g, '"');
+      const el = document.getElementById(key);
+      if (el) el.innerHTML = val;
+    });
+  } catch(e) {
+    console.warn('Sheet content load failed:', e);
+    // Falls back to hardcoded text silently
+  }
+}
+
+loadSheetContent();
+</script>
+
 </body>
 </html>
