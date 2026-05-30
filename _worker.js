@@ -15,10 +15,10 @@ export default {
       });
     }
 
-    // Fall through to static assets
-    if (env.ASSETS) return env.ASSETS.fetch(request);
+    const assetRequest = url.pathname === '/' 
+      ? new Request(new URL('/index.html', request.url), request)
+      : request;
     
-    // Fallback if no ASSETS binding
-    return fetch(request);
+    return env.ASSETS.fetch(assetRequest);
   }
 }
