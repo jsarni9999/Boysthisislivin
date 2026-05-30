@@ -825,8 +825,11 @@ const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQB5DaeXC
 
 async function loadSheetContent() {
   if (!SHEET_CSV_URL) return; // no URL set yet — use hardcoded defaults
+  // Route through a CORS proxy so published sites can reach Google Sheets
+  const PROXY = 'https://corsproxy.io/?url=';
+  const url = PROXY + encodeURIComponent(SHEET_CSV_URL);
   try {
-    const res = await fetch(SHEET_CSV_URL);
+    const res = await fetch(url);
     if (!res.ok) return;
     const text = await res.text();
     const rows = text.trim().split('\n').slice(1); // skip header row
