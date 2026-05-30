@@ -927,18 +927,21 @@ function parseCSV(text) {
 }
 
 async function loadSheetContent() {
-  if (!SHEET_CSV_URL) return;
-  // Try multiple proxies in order until one works
+  if (!SHEET_CSV_URL) { console.warn('SHEET_CSV_URL is empty'); return; }
   let text = null;
   try {
+    console.log('Fetching /sheets-proxy...');
     const res = await fetch('/sheets-proxy');
-    if (res.ok) { text = await res.text(); }
+    console.log('Response status:', res.status, res.ok);
+    if (res.ok) { text = await res.text(); console.log('CSV length:', text.length, 'First 200 chars:', text.substring(0, 200)); }
   } catch(e) { console.warn('Sheet proxy failed:', e); }
   if (!text) { console.warn('Sheet load failed — using hardcoded defaults'); return; }
   const data = parseCSV(text);
+  console.log('Parsed keys:', Object.keys(data));
   Object.entries(data).forEach(([key, val]) => {
     const el = document.getElementById(key);
-    if (el) el.innerHTML = val;
+    if (el) { console.log('Setting', key); el.innerHTML = val; }
+    else { console.warn('No element found for key:', key); }
   });
 }
 
