@@ -848,19 +848,12 @@ function parseCSV(text) {
 async function loadSheetContent() {
   if (!SHEET_CSV_URL) return;
   // Try multiple proxies in order until one works
-  const proxies = [
-    'https://api.allorigins.win/raw?url=',
-    'https://corsproxy.io/?url=',
-    'https://api.codetabs.com/v1/proxy?quest='
-  ];
   let text = null;
-  for (const proxy of proxies) {
-    try {
-      const res = await fetch(proxy + encodeURIComponent(SHEET_CSV_URL));
-      if (res.ok) { text = await res.text(); break; }
-    } catch(e) { /* try next proxy */ }
-  }
-  if (!text) { console.warn('All sheet proxies failed — using hardcoded defaults'); return; }
+  try {
+    const res = await fetch('/sheets-proxy');
+    if (res.ok) { text = await res.text(); }
+  } catch(e) { console.warn('Sheet proxy failed:', e); }
+  if (!text) { console.warn('Sheet load failed — using hardcoded defaults'); return; }
   const data = parseCSV(text);
   Object.entries(data).forEach(([key, val]) => {
     const el = document.getElementById(key);
