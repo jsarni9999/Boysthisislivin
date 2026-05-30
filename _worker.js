@@ -1,7 +1,7 @@
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    
+
     if (url.pathname === '/sheets-proxy') {
       const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQB5DaeXCB71JJEirxddx3C5mJf8dGLMNoqVchwgwWb35gLY5BDwNiStZpUEW3-aU3PSwtAKSNyQjqV/pub?gid=485151315&single=true&output=csv';
       const res = await fetch(SHEET_URL);
@@ -15,10 +15,13 @@ export default {
       });
     }
 
-    const assetRequest = url.pathname === '/' 
-      ? new Request(new URL('/index.html', request.url), request)
-      : request;
-    
-    return env.ASSETS.fetch(assetRequest);
+    if (env.ASSETS) {
+      const assetRequest = url.pathname === '/'
+        ? new Request(new URL('/index.html', request.url), request)
+        : request;
+      return env.ASSETS.fetch(assetRequest);
+    }
+
+    return new Response('Not found', { status: 404 });
   }
 }
