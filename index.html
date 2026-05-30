@@ -823,29 +823,49 @@ buildHistory();
 
 const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQB5DaeXCB71JJEirxddx3C5mJf8dGLMNoqVchwgwWb35gLY5BDwNiStZpUEW3-aU3PSwtAKSNyQjqV/pub?gid=485151315&single=true&output=csv'; // ← paste your published CSV URL here
 
+function parseCSV(text) {
+  const results = {};
+  const rows = text.trim().split('\n').slice(1); // skip header
+  rows.forEach(row => {
+    // Robust CSV parser: handles quoted fields containing commas
+    const fields = [];
+    let cur = '', inQuote = false;
+    for (let i = 0; i < row.length; i++) {
+      const ch = row[i];
+      if (ch === '"' && row[i+1] === '"') { cur += '"'; i++; }
+      else if (ch === '"') { inQuote = !inQuote; }
+      else if (ch === ',' && !inQuote) { fields.push(cur); cur = ''; }
+      else { cur += ch; }
+    }
+    fields.push(cur);
+    const key = (fields[0] || '').trim();
+    const val = (fields[1] || '').trim();
+    if (key) results[key] = val;
+  });
+  return results;
+}
+
 async function loadSheetContent() {
-  if (!SHEET_CSV_URL) return; // no URL set yet — use hardcoded defaults
-  // Route through a CORS proxy so published sites can reach Google Sheets
-  const PROXY = 'https://corsproxy.io/?url=';
-  const url = PROXY + encodeURIComponent(SHEET_CSV_URL);
-  try {
-    const res = await fetch(url);
-    if (!res.ok) return;
-    const text = await res.text();
-    const rows = text.trim().split('\n').slice(1); // skip header row
-    rows.forEach(row => {
-      // Handle quoted CSV values
-      const match = row.match(/^([^,]+),(.*)$/);
-      if (!match) return;
-      const key = match[1].trim().replace(/^"|"$/g, '');
-      const val = match[2].trim().replace(/^"|"$/g, '').replace(/""/g, '"');
-      const el = document.getElementById(key);
-      if (el) el.innerHTML = val;
-    });
-  } catch(e) {
-    console.warn('Sheet content load failed:', e);
-    // Falls back to hardcoded text silently
+  if (!SHEET_CSV_URL) return;
+  // Try multiple proxies in order until one works
+  const proxies = [
+    'https://api.allorigins.win/raw?url=',
+    'https://corsproxy.io/?url=',
+    'https://api.codetabs.com/v1/proxy?quest='
+  ];
+  let text = null;
+  for (const proxy of proxies) {
+    try {
+      const res = await fetch(proxy + encodeURIComponent(SHEET_CSV_URL));
+      if (res.ok) { text = await res.text(); break; }
+    } catch(e) { /* try next proxy */ }
   }
+  if (!text) { console.warn('All sheet proxies failed — using hardcoded defaults'); return; }
+  const data = parseCSV(text);
+  Object.entries(data).forEach(([key, val]) => {
+    const el = document.getElementById(key);
+    if (el) el.innerHTML = val;
+  });
 }
 
 loadSheetContent();
