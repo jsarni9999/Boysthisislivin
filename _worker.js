@@ -6,18 +6,21 @@ export default {
       const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQB5DaeXCB71JJEirxddx3C5mJf8dGLMNoqVchwgwWb35gLY5BDwNiStZpUEW3-aU3PSwtAKSNyQjqV/pub?gid=485151315&single=true&output=csv';
       const res = await fetch(SHEET_URL);
       const text = await res.text();
-      return new Response(text, {
-        headers: { 'Content-Type': 'text/csv', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store' }
-      });
+      return new Response(text, { headers: { 'Content-Type': 'text/csv', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store' } });
     }
 
     if (url.pathname === '/scores-proxy') {
       const SCORES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQB5DaeXCB71JJEirxddx3C5mJf8dGLMNoqVchwgwWb35gLY5BDwNiStZpUEW3-aU3PSwtAKSNyQjqV/pub?gid=1738518390&single=true&output=csv';
       const res = await fetch(SCORES_URL);
       const text = await res.text();
-      return new Response(text, {
-        headers: { 'Content-Type': 'text/csv', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store' }
-      });
+      return new Response(text, { headers: { 'Content-Type': 'text/csv', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store' } });
+    }
+
+    if (url.pathname === '/gallery-proxy') {
+      const GALLERY_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQB5DaeXCB71JJEirxddx3C5mJf8dGLMNoqVchwgwWb35gLY5BDwNiStZpUEW3-aU3PSwtAKSNyQjqV/pub?gid=431906449&single=true&output=csv';
+      const res = await fetch(GALLERY_URL);
+      const text = await res.text();
+      return new Response(text, { headers: { 'Content-Type': 'text/csv', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store' } });
     }
 
     if (url.pathname === '/save-scores' && request.method === 'POST') {
@@ -28,9 +31,7 @@ export default {
         headers: { 'Content-Type': 'application/json' },
         body: body
       });
-      return new Response('ok', {
-        headers: { 'Access-Control-Allow-Origin': '*' }
-      });
+      return new Response('ok', { headers: { 'Access-Control-Allow-Origin': '*' } });
     }
 
     return env.ASSETS.fetch(request);
