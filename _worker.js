@@ -20,6 +20,19 @@ export default {
       });
     }
 
+    if (url.pathname === '/save-scores' && request.method === 'POST') {
+      const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzw_3lfm80ptRSued2d9HQaCtiefJ2nqhD2aZ1PXkOBZpE_Lyfhy1G_DTd80X6J6MP-CA/exec';
+      const body = await request.text();
+      const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: body
+      });
+      return new Response('ok', {
+        headers: { 'Access-Control-Allow-Origin': '*' }
+      });
+    }
+
     return env.ASSETS.fetch(request);
   }
 }
