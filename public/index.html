@@ -558,7 +558,15 @@ const roommateData = [
   { name:"Kevin Gately", nights:"—", room:"—", roommate:"—", status:"In" },
   { name:"Frank Gately", nights:"—", room:"—", roommate:"—", status:"In" },
   { name:"Eric Stanwood", nights:"—", room:"—", roommate:"—", status:"In" },
-];
+].sort((a, b) => {
+  const lastName = n => {
+    const parts = n.trim().split(' ');
+    const suffixes = ['jr.','sr.','jr','sr','ii','iii','iv'];
+    const last = parts.slice(1).filter(p => !suffixes.includes(p.toLowerCase().replace('.',''))).slice(-1)[0] || parts[0];
+    return last.toLowerCase();
+  };
+  return lastName(a.name).localeCompare(lastName(b.name));
+});
 
 function buildRoommateTable() {
   const tbody = document.getElementById('roommate-table-body');
