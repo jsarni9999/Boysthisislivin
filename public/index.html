@@ -980,9 +980,8 @@ async function saveScoreRow(i) {
   const status = document.querySelector('#page-scores #scores-save-status') || document.getElementById('scores-save-status');
   if (status) status.textContent = 'Saving...';
   try {
-    await fetch(SCORES_SCRIPT_URL, {
+    await fetch('/save-scores', {
       method: 'POST',
-      mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'saveRow', name: s.name, r1: s.r1, r2: s.r2, r3: s.r3 })
     });
@@ -995,9 +994,8 @@ async function saveAllScores() {
   const status = document.querySelector('#page-scores #scores-save-status') || document.getElementById('scores-save-status');
   if (status) status.textContent = 'Saving all scores...';
   try {
-    await fetch(SCORES_SCRIPT_URL, {
+    await fetch('/save-scores', {
       method: 'POST',
-      mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'saveAll', scores: scoresData })
     });
