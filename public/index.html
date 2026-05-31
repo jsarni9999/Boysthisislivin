@@ -192,6 +192,22 @@
     <div id="gallery-timeline"></div>
   </div>
 </div>
+
+<!-- Lightbox overlay -->
+<div id="gallery-lightbox" onclick="closeLightbox()" style="display:none; position:fixed; inset:0; z-index:200; background:rgba(10,20,15,0.95); align-items:center; justify-content:center; flex-direction:column; gap:16px;">
+  <div onclick="event.stopPropagation()" style="position:relative; max-width:90vw; max-height:80vh; display:flex; flex-direction:column; align-items:center; gap:12px;">
+    <img id="lb-img" src="" alt="" style="max-width:90vw; max-height:72vh; object-fit:contain; border-radius:6px; display:block;">
+    <div style="display:flex; align-items:center; gap:16px;">
+      <button onclick="lbNav(-1)" style="background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.3); color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:1.2rem; font-weight:700; padding:6px 20px; border-radius:20px; cursor:pointer; letter-spacing:1px;">← Prev</button>
+      <div style="text-align:center;">
+        <div id="lb-caption" style="font-family:'Barlow Condensed',sans-serif; font-size:0.9rem; color:rgba(255,255,255,0.8); letter-spacing:0.5px; max-width:400px;"></div>
+        <div id="lb-counter" style="font-family:'Barlow Condensed',sans-serif; font-size:0.75rem; color:rgba(255,255,255,0.4); margin-top:4px; letter-spacing:1px;"></div>
+      </div>
+      <button onclick="lbNav(1)" style="background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.3); color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:1.2rem; font-weight:700; padding:6px 20px; border-radius:20px; cursor:pointer; letter-spacing:1px;">Next →</button>
+    </div>
+  </div>
+  <button onclick="closeLightbox()" style="position:fixed; top:16px; right:20px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.3); color:#fff; font-size:1.2rem; width:36px; height:36px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
+</div>
 <div class="page" id="page-roommates">
   <div class="section">
     <h2 class="section-title">Room Assignments</h2>
@@ -1048,11 +1064,36 @@ async function loadScoresFromSheet() {
 // ── Photo Gallery ─────────────────────────────────────────────────────────
 const GALLERY_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQB5DaeXCB71JJEirxddx3C5mJf8dGLMNoqVchwgwWb35gLY5BDwNiStZpUEW3-aU3PSwtAKSNyQjqV/pub?gid=431906449&single=true&output=csv'; // ← paste your published gallery tab CSV URL here
 
+// lightbox state
+let _lbPhotos = [], _lbIndex = 0;
+
+function openLightbox(photos, index) {
+  _lbPhotos = photos; _lbIndex = index;
+  renderLightbox();
+  document.getElementById('gallery-lightbox').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('gallery-lightbox').style.display = 'none';
+  document.body.style.overflow = '';
+}
+function lbNav(dir) {
+  _lbIndex = (_lbIndex + dir + _lbPhotos.length) % _lbPhotos.length;
+  renderLightbox();
+}
+function renderLightbox() {
+  const p = _lbPhotos[_lbIndex];
+  document.getElementById('lb-img').src = `gallery/${p.year}/${p.filename}`;
+  document.getElementById('lb-img').alt = p.caption;
+  document.getElementById('lb-caption').textContent = p.caption || `${p.year} · ${p.filename}`;
+  document.getElementById('lb-counter').textContent = `${_lbIndex + 1} / ${_lbPhotos.length}`;
+}
+
 async function loadGallery() {
   const container = document.getElementById('gallery-timeline');
   if (!container) return;
   if (!GALLERY_CSV_URL) {
-    container.innerHTML = '<p style="color:var(--text-muted); font-size:0.95rem;">Gallery coming soon — add your Google Sheet gallery tab URL to enable photos.</p>';
+    container.innerHTML = '<p style="color:var(--text-muted); font-size:0.95rem;">Gallery coming soon.</p>';
     return;
   }
   try {
@@ -1078,21 +1119,23 @@ async function loadGallery() {
       };
     }).filter(p => p.year && p.filename);
 
-    // Group by year descending
+    // store all photos globally for lightbox nav
+    window._allGalleryPhotos = photos;
+
     const byYear = {};
     photos.forEach(p => { if (!byYear[p.year]) byYear[p.year] = []; byYear[p.year].push(p); });
     const years = Object.keys(byYear).sort((a,b) => b - a);
 
     container.innerHTML = years.map(year => {
-      const thumbs = byYear[year].map(p => `
-        <a href="gallery/${year}/${p.filename}" target="_blank" rel="noopener" title="${p.caption}" style="display:inline-block; flex-shrink:0;">
-          <img src="gallery/${year}/${p.filename}" alt="${p.caption}"
-            style="width:80px; height:64px; object-fit:cover; border-radius:4px; display:block; border:2px solid transparent; transition:border-color 0.15s, transform 0.15s;"
-            onmouseover="this.style.borderColor='var(--gold)'; this.style.transform='scale(1.04)';"
-            onmouseout="this.style.borderColor='transparent'; this.style.transform='scale(1)';"
-            onerror="this.parentElement.style.display='none'">
-        </a>
-      `).join('');
+      const thumbs = byYear[year].map((p, i) => {
+        const globalIdx = photos.indexOf(p);
+        return `<img src="gallery/${year}/${p.filename}" alt="${p.caption}"
+          style="width:80px; height:64px; object-fit:cover; border-radius:4px; display:block; border:2px solid transparent; transition:border-color 0.15s, transform 0.15s; cursor:pointer; flex-shrink:0;"
+          onmouseover="this.style.borderColor='var(--gold)'; this.style.transform='scale(1.04)';"
+          onmouseout="this.style.borderColor='transparent'; this.style.transform='scale(1)';"
+          onclick="openLightbox(window._allGalleryPhotos, ${globalIdx})"
+          onerror="this.style.display='none'">`;
+      }).join('');
       return `
         <div style="display:flex; align-items:center; gap:14px; margin-bottom:18px;">
           <div style="font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:1.4rem; color:var(--gold); min-width:48px; border-right:2px solid var(--gold); padding-right:12px; text-align:center;">${year}</div>
@@ -1107,6 +1150,15 @@ async function loadGallery() {
 loadWeather();
 loadSheetContent();
 loadScoresFromSheet();
+
+document.addEventListener('keydown', e => {
+  const lb = document.getElementById('gallery-lightbox');
+  if (lb && lb.style.display !== 'none') {
+    if (e.key === 'ArrowLeft') lbNav(-1);
+    if (e.key === 'ArrowRight') lbNav(1);
+    if (e.key === 'Escape') closeLightbox();
+  }
+});
 </script>
 
 </body>
