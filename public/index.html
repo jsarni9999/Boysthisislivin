@@ -421,13 +421,15 @@
     <h2 class="section-title">Player Scores</h2>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Player</th><th>7/22 Morning Round</th><th>7/22 Optional Round</th><th>7/23 Morning Round</th></tr></thead>
+        <thead><tr><th>Player</th><th>7/22 Morning Round</th><th>7/22 Optional Round</th><th>7/23 Morning Round</th><th>Save</th></tr></thead>
         <tbody id="public-scores-body"></tbody>
       </table>
     </div>
-    <div style="display:flex; gap:0.75rem; margin-top:1rem;">
+    <div style="display:flex; gap:0.75rem; margin-top:1rem; flex-wrap:wrap;">
+      <button class="btn btn-gold" onclick="saveAllScores()">💾 Save All Scores</button>
       <button class="btn" onclick="window.print()">🖨 Print Scores</button>
     </div>
+    <div id="scores-save-status" style="margin-top:0.5rem; font-size:0.85rem; color:var(--green);"></div>
   </div>
 </div>
 <div class="page" id="page-scramblepage">
@@ -596,6 +598,7 @@ function buildPublicScores() {
       <td><input type="number" style="width:60px; padding:2px 6px;" placeholder="—" value="${s.r1}" onchange="scoresData[${i}].r1=this.value;"></td>
       <td><input type="number" style="width:60px; padding:2px 6px;" placeholder="—" value="${s.r2}" onchange="scoresData[${i}].r2=this.value;"></td>
       <td><input type="number" style="width:60px; padding:2px 6px;" placeholder="—" value="${s.r3}" onchange="scoresData[${i}].r3=this.value;"></td>
+      <td><button class="btn btn-gold" style="font-size:0.75rem; padding:3px 10px;" onclick="saveScoreRow(${i})">💾</button></td>
     </tr>
   `).join('');
 }
@@ -755,7 +758,7 @@ function showPage(id) {
   if (page) page.classList.add('active');
   const nav = document.getElementById('nav-'+id);
   if (nav) nav.classList.add('active');
-  if (id === 'scores') buildPublicScores();
+  if (id === 'scores') { buildPublicScores(); buildScoresTable(); }
   if (id === 'milkrun') { buildMilkRunWinners(); buildMilkRunWinnersHist(); }
   if (id === 'scramblepage') buildScramblePage();
   window.scrollTo(0,0);
@@ -966,8 +969,8 @@ async function loadWeather() {
 async function saveScoreRow(i) {
   if (!SCORES_SCRIPT_URL) { alert('Scores script URL not set.'); return; }
   const s = scoresData[i];
-  const status = document.getElementById('scores-save-status');
-  status.textContent = 'Saving...';
+  const status = document.querySelector('#page-scores #scores-save-status') || document.getElementById('scores-save-status');
+  if (status) status.textContent = 'Saving...';
   try {
     await fetch(SCORES_SCRIPT_URL, {
       method: 'POST',
@@ -975,15 +978,14 @@ async function saveScoreRow(i) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'saveRow', name: s.name, r1: s.r1, r2: s.r2, r3: s.r3 })
     });
-    status.textContent = '✓ ' + s.name + ' saved';
-    setTimeout(() => status.textContent = '', 3000);
-  } catch(e) { status.textContent = '✗ Save failed'; }
+    if (status) { status.textContent = '✓ ' + s.name + ' saved'; setTimeout(() => status.textContent = '', 3000); }
+  } catch(e) { if (status) status.textContent = '✗ Save failed'; }
 }
 
 async function saveAllScores() {
   if (!SCORES_SCRIPT_URL) { alert('Scores script URL not set.'); return; }
-  const status = document.getElementById('scores-save-status');
-  status.textContent = 'Saving all scores...';
+  const status = document.querySelector('#page-scores #scores-save-status') || document.getElementById('scores-save-status');
+  if (status) status.textContent = 'Saving all scores...';
   try {
     await fetch(SCORES_SCRIPT_URL, {
       method: 'POST',
@@ -991,9 +993,8 @@ async function saveAllScores() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'saveAll', scores: scoresData })
     });
-    status.textContent = '✓ All scores saved';
-    setTimeout(() => status.textContent = '', 3000);
-  } catch(e) { status.textContent = '✗ Save failed'; }
+    if (status) { status.textContent = '✓ All scores saved'; setTimeout(() => status.textContent = '', 3000); }
+  } catch(e) { if (status) status.textContent = '✗ Save failed'; }
 }
 
 async function loadScoresFromSheet() {
