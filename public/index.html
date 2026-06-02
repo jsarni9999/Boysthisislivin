@@ -8,6 +8,9 @@
   ║  Located near the bottom of this file in a <script> block   ║
   ║  Paste your published Google Sheet CSV URL between the ''   ║
   ║                                                             ║
+  ║  PASSWORD: Search for PW_ENABLED                           ║
+  ║  Set to true (on) or false (off) for development           ║
+  ║                                                             ║
   ║  UPDATING VIA CLAUDE:                                       ║
   ║  1. Always upload THIS file (the latest version)            ║
   ║  2. Make your changes                                       ║
@@ -1166,6 +1169,7 @@ loadScoresFromSheet();
 
 // ── Password Gate ─────────────────────────────────────────────────────────
 const PW = 'MilkRun26';
+const PW_ENABLED = false; // ← set to true or false to disable password during development
 function checkPW() {
   const val = document.getElementById('pw-input').value;
   if (val === PW) {
@@ -1179,7 +1183,7 @@ function checkPW() {
 }
 (function() {
   const gate = document.getElementById('pw-gate');
-  if (sessionStorage.getItem('btil_auth') !== '1') {
+  if (PW_ENABLED && sessionStorage.getItem('btil_auth') !== '1') {
     gate.style.display = 'flex';
     setTimeout(() => document.getElementById('pw-input').focus(), 100);
   }
