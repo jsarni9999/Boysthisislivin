@@ -100,8 +100,8 @@
       First tee shot was back in 1972, and we haven't missed a year since. We found our permanent home at Shawnee in 1992 and never left.
       <br><br>
       <div style="text-align:center;font-size:1.15em;font-weight:700;">The original cast back in 1972:</div>
-      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px 16px;margin:0 auto 0;max-width:680px;text-align:center;">
-        <div style="color:#d4943a;font-weight:700;font-size:1.1em;">Pete Butler</div><div style="color:#d4943a;font-weight:700;font-size:1.1em;">Sal Caprio</div><div style="color:#d4943a;font-weight:700;font-size:1.1em;">Tom Cregan</div><div style="color:#d4943a;font-weight:700;font-size:1.1em;">Joe Kane Sr</div><div style="color:#d4943a;font-weight:700;font-size:1.1em;">Monsignor Kelly</div><div style="color:#d4943a;font-weight:700;font-size:1.1em;">Ed Mcinroy</div><div style="color:#d4943a;font-weight:700;font-size:1.1em;">Rich Morris</div><div style="color:#d4943a;font-weight:700;font-size:1.1em;">Jack O'Roarke</div><div style="color:#d4943a;font-weight:700;font-size:1.1em;">Don Schwartz</div><div style="color:#d4943a;font-weight:700;font-size:1.1em;">John Slevin</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px 12px;margin:0 auto 0;max-width:680px;text-align:center;">
+        <div style="color:#d4943a;font-weight:700;font-size:1.05em;">Pete Butler</div><div style="color:#d4943a;font-weight:700;font-size:1.05em;">Sal Caprio</div><div style="color:#d4943a;font-weight:700;font-size:1.05em;">Tom Cregan</div><div style="color:#d4943a;font-weight:700;font-size:1.05em;">Joe Kane Sr</div><div style="color:#d4943a;font-weight:700;font-size:1.05em;">Monsignor Kelly</div><div style="color:#d4943a;font-weight:700;font-size:1.05em;">Ed Mcinroy</div><div style="color:#d4943a;font-weight:700;font-size:1.05em;">Rich Morris</div><div style="color:#d4943a;font-weight:700;font-size:1.05em;">Jack O'Roarke</div><div style="color:#d4943a;font-weight:700;font-size:1.05em;">Don Schwartz</div><div style="color:#d4943a;font-weight:700;font-size:1.05em;">John Slevin</div>
       </div>
     </p>
     <div style="margin-top:1.5rem; border-radius:var(--radius); overflow:hidden; box-shadow:0 4px 16px rgba(0,0,0,0.12);">
@@ -971,21 +971,35 @@ const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQB5DaeXC
 
 function parseCSV(text) {
   const results = {};
-  const rows = text.trim().split('\n').slice(1); // skip header
-  rows.forEach(row => {
-    // Robust CSV parser: handles quoted fields containing commas
-    const fields = [];
-    let cur = '', inQuote = false;
-    for (let i = 0; i < row.length; i++) {
-      const ch = row[i];
-      if (ch === '"' && row[i+1] === '"') { cur += '"'; i++; }
-      else if (ch === '"') { inQuote = !inQuote; }
-      else if (ch === ',' && !inQuote) { fields.push(cur); cur = ''; }
+  // Full CSV tokenizer: walks character-by-character so quoted fields
+  // (including ones containing commas AND line breaks) are handled
+  // correctly. We do NOT split the raw text on '\n' up front, since
+  // that incorrectly breaks a row apart at a line break that lives
+  // inside a quoted cell (e.g. text with Alt+Enter / CHAR(10) in it).
+  const allRows = [];
+  let row = [], cur = '', inQuote = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inQuote) {
+      if (ch === '"' && text[i+1] === '"') { cur += '"'; i++; }
+      else if (ch === '"') { inQuote = false; }
+      else { cur += ch; }
+    } else {
+      if (ch === '"') { inQuote = true; }
+      else if (ch === ',') { row.push(cur); cur = ''; }
+      else if (ch === '\r') { /* ignore, handled by \n or \r\n */ }
+      else if (ch === '\n') { row.push(cur); cur = ''; allRows.push(row); row = []; }
       else { cur += ch; }
     }
-    fields.push(cur);
+  }
+  if (cur.length || row.length) { row.push(cur); allRows.push(row); }
+
+  const dataRows = allRows.slice(1); // skip header
+  dataRows.forEach(fields => {
     const key = (fields[0] || '').trim();
-    const val = (fields[1] || '').trim();
+    // Convert any remaining plain line breaks to <br> so they render
+    // visually, since values are inserted via innerHTML further down.
+    const val = (fields[1] || '').trim().replace(/\n/g, '<br>');
     if (key) results[key] = val;
   });
   return results;
