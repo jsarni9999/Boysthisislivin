@@ -851,6 +851,53 @@ function buildYearlyWinners() {
   }).join('');
 }
 
+async function loadYearlyWinners() {
+  if (!WINNERS_CSV_URL) return;
+  try {
+    const res = await fetch(WINNERS_CSV_URL);
+    if (!res.ok) return;
+    const text = await res.text();
+    const rows = text.trim().split('\n').slice(1);
+    const clean = s => (s||'').trim().replace(/^"|"$/g,'');
+    const parsed = rows.map(row => {
+      const fields = [];
+      let cur = '', inQ = false;
+      for (let i = 0; i < row.length; i++) {
+        const ch = row[i];
+        if (ch === '"' && row[i+1] === '"') { cur += '"'; i++; }
+        else if (ch === '"') { inQ = !inQ; }
+        else if (ch === ',' && !inQ) { fields.push(cur); cur = ''; }
+        else { cur += ch; }
+      }
+      fields.push(cur);
+      const year = clean(fields[0]);
+      const ctpWinner = clean(fields[1]);
+      const ctpDistance = clean(fields[2]);
+      const longestDrive = clean(fields[3]);
+      const lowRoundWinner = clean(fields[4]);
+      const lowRoundScore = clean(fields[5]);
+      const scrambleTeam = [fields[6],fields[7],fields[8],fields[9]].map(clean).filter(Boolean);
+      const scrambleScoreRaw = clean(fields[10]);
+      const scrambleToParRaw = clean(fields[11]);
+      return {
+        year: year,
+        ctp: ctpWinner ? (ctpDistance ? `${ctpWinner} — ${ctpDistance}` : ctpWinner) : '',
+        longestDrive: longestDrive,
+        lowRound: lowRoundWinner ? (lowRoundScore ? `${lowRoundWinner} — ${lowRoundScore}` : lowRoundWinner) : '',
+        scrambleTeam: scrambleTeam,
+        scrambleScore: scrambleScoreRaw === '' ? null : scrambleScoreRaw,
+        scrambleToPar: scrambleToParRaw === '' ? null : Number(scrambleToParRaw),
+      };
+    }).filter(w => w.year);
+    if (parsed.length) {
+      parsed.sort((a,b) => b.year - a.year);
+      yearlyWinners.length = 0;
+      parsed.forEach(w => yearlyWinners.push(w));
+      buildYearlyWinners();
+    }
+  } catch(e) { console.warn('Yearly winners load failed:', e); }
+}
+
 function toggleMobileMenu() {
   document.getElementById('mobile-menu').classList.toggle('open');
 }
@@ -1133,6 +1180,7 @@ async function loadScoresFromSheet() {
 
 // ── Photo Gallery ─────────────────────────────────────────────────────────
 const GALLERY_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQB5DaeXCB71JJEirxddx3C5mJf8dGLMNoqVchwgwWb35gLY5BDwNiStZpUEW3-aU3PSwtAKSNyQjqV/pub?gid=431906449&single=true&output=csv'; // ← paste your published gallery tab CSV URL here
+const WINNERS_CSV_URL = ''; // ← paste your published yearly-winners tab CSV URL here (columns: Year, CTP Winner, CTP Distance, Longest Drive, Low Round Winner, Low Round Score, Scramble 1-4, Scramble Score, Scramble To Par)
 
 // lightbox state
 let _lbPhotos = [], _lbIndex = 0;
@@ -1220,6 +1268,7 @@ async function loadGallery() {
 loadWeather();
 loadSheetContent();
 loadScoresFromSheet();
+loadYearlyWinners();
 
 // ── Password Gate ─────────────────────────────────────────────────────────
 const PW = 'MilkRun26';
