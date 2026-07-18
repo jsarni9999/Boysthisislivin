@@ -315,15 +315,20 @@
       </div>
     </div>
 <div class="history-tab-panel" id="tab-history-winners">
-      <div style="background:var(--white); border:1px solid #ddd; border-radius:4px; padding:1.25rem; margin-bottom:1rem;">
-        <div class="form-grid">
-          <div class="form-group"><label>Event</label><input type="text" id="winner-event" placeholder="Blitz, Closest to Pin…"></div>
-          <div class="form-group"><label>Winner</label><input type="text" id="winner-name" placeholder="Player name"></div>
-          <div class="form-group full"><label>Description</label><input type="text" id="winner-desc" placeholder="Optional details…"></div>
-        </div>
-        <button class="btn btn-gold" style="margin-top:0.75rem;" onclick="addWinner()">Add Winner</button>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Closest to Pin</th>
+              <th>Longest Drive</th>
+              <th>Low Round</th>
+              <th>Scramble Champs</th>
+            </tr>
+          </thead>
+          <tbody id="yearly-winners-body"></tbody>
+        </table>
       </div>
-      <div id="winners-list"></div>
     </div>
 </div>
 </div>
@@ -811,30 +816,39 @@ const yoyData = [
 function buildHistory() {
   const tbody = document.getElementById('yoy-table');
   tbody.innerHTML = yoyData.map(r => {
-    const years = r.years.join(', ');
+    const years = r.years.map(y => y === 2026
+      ? `<strong style="font-size:1.15em; color:var(--green-dark);">${y}</strong>`
+      : y
+    ).join(', ');
     return `<tr><td>${r.name}</td><td style="font-size:0.85rem; color:var(--text-muted);">${years}</td><td><strong>${r.years.length}</strong></td></tr>`;
   }).join('');
 }
 
-const winners = [];
-function addWinner() {
-  const e = document.getElementById('winner-event').value;
-  const n = document.getElementById('winner-name').value;
-  const d = document.getElementById('winner-desc').value;
-  if (!e || !n) return;
-  winners.push({e,n,d});
-  renderWinners();
-  document.getElementById('winner-event').value='';
-  document.getElementById('winner-name').value='';
-  document.getElementById('winner-desc').value='';
-}
-function renderWinners() {
-  document.getElementById('winners-list').innerHTML = winners.map(w=>`
-    <div class="card" style="border-left-color:var(--gold);">
-      <h3>🏆 ${w.e}</h3>
-      <p><strong>${w.n}</strong>${w.d ? ' — '+w.d : ''}</p>
-    </div>
-  `).join('');
+const yearlyWinners = [
+  { year: 2024, ctp: "", longestDrive: "", lowRound: "", scrambleTeam: ["Joe Sarni","Don Unkel","Donavan Monteverdi","Joe Lembo"], scrambleScore: null, scrambleToPar: null },
+  // { year: 2025, ctp: "Player Name — 4'2\"", longestDrive: "Player Name", lowRound: "Player Name — 74", scrambleTeam: ["Player 1","Player 2","Player 3","Player 4"], scrambleScore: 64, scrambleToPar: -8 },
+];
+function buildYearlyWinners() {
+  const tbody = document.getElementById('yearly-winners-body');
+  if (!tbody) return;
+  if (!yearlyWinners.length) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:1.5rem;">No winners recorded yet — check back after the trip!</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = yearlyWinners.map(w => {
+    const team = w.scrambleTeam && w.scrambleTeam.length ? w.scrambleTeam.join(', ') : '—';
+    const hasScore = w.scrambleScore !== null && w.scrambleScore !== undefined;
+    const toPar = w.scrambleToPar > 0 ? `+${w.scrambleToPar}` : w.scrambleToPar;
+    const scrambleCell = hasScore ? `${team} (${w.scrambleScore}, ${toPar})` : team;
+    return `
+    <tr>
+      <td style="font-family:'Barlow Condensed',sans-serif; font-weight:700; color:var(--gold); font-size:1.1rem;">${w.year}</td>
+      <td>${w.ctp || '—'}</td>
+      <td>${w.longestDrive || '—'}</td>
+      <td>${w.lowRound || '—'}</td>
+      <td>${scrambleCell}</td>
+    </tr>`;
+  }).join('');
 }
 
 function toggleMobileMenu() {
@@ -918,6 +932,7 @@ function buildMilkRunWinners() {
 }
 
 buildHistory();
+buildYearlyWinners();
 
 // ── Dynamic content from Google Sheets ──────────────────────────────────────
 // HOW TO USE:
