@@ -157,7 +157,7 @@
 
 <div class="page" id="page-milkrun">
   <div class="section">
-    <h2 class="section-title">🍶 The Coveted Milk Run Award</h2>
+    <h2 class="section-title">🍶 The Coveted Milk Run Award (Under Construction)</h2>
 
     <div class="card" style="border-left:4px solid var(--gold); margin-bottom:1.5rem; background:linear-gradient(135deg,#fffdf5,#fff8e8);">
       <h3 style="font-size:1.3rem; margin-bottom:0.75rem; color:var(--green-dark);">The Legend</h3>
@@ -767,14 +767,87 @@ function saveTeeTimes2() {
   btn.textContent = '✅ Saved'; setTimeout(()=>btn.textContent='💾 Save Changes', 2000);
 }
 
+const yoyData = [
+  { name:"Aidan Monteverdi", years:[2026] },
+  { name:"Alex Giacchi", years:[2026,2025,2024,2023,2022,2021,2020] },
+  { name:"Alex Lipkin", years:[2026,2025,2024] },
+  { name:"Andy Morris", years:[2026,2025,2024,2023,2022,2021] },
+  { name:"Angelo DiCaro", years:[2026,2025,2024,2023,2022,2021,2020] },
+  { name:"Angelo Giambattista", years:[2026,2025,2024,2023,2022,2021,2020] },
+  { name:"Anthony Criscuola", years:[2026,2025,2021] },
+  { name:"Bill Mallek", years:[2024] },
+  { name:"Brendan Shamieh", years:[2026,2024,2023,2022] },
+  { name:"Cliff Michaels", years:[2026,2025,2024,2023,2022] },
+  { name:"Conor McCabe", years:[2020] },
+  { name:"Dom Barone Jr.", years:[2026] },
+  { name:"Dom Barone Sr.", years:[2026] },
+  { name:"Dom Gargano", years:[2023] },
+  { name:"Domenic Giambattista", years:[2026,2025,2024,2023,2022,2021,2020] },
+  { name:"Don Unkel", years:[2024,2022,2021,2020] },
+  { name:"Donavan Monteverdi", years:[2026,2025,2024,2023,2021,2020] },
+  { name:"Eric Stanwood", years:[2026,2025,2024] },
+  { name:"Frank Gately", years:[2026] },
+  { name:"Fred Lipkin", years:[2026,2025,2024] },
+  { name:"Gary Holmes", years:[2026,2025,2023,2020] },
+  { name:"GianCarlo Barone", years:[2026,2025,2024,2023,2021,2020] },
+  { name:"Helms Bohringer", years:[2026,2025,2023] },
+  { name:"Jason Manning", years:[2024,2023,2022,2020] },
+  { name:"Jim O'Hara", years:[2025,2024,2023] },
+  { name:"Jim Poltriczky", years:[2026,2025,2024,2023,2022,2021,2020] },
+  { name:"Jim Ravel", years:[2026,2025,2024,2023,2022,2021,2020] },
+  { name:"Joe Deehan", years:[2024,2021] },
+  { name:"Joe Lembo", years:[2026,2024,2023,2022] },
+  { name:"Joe Sarni", years:[2026,2025,2024,2023,2022,2021,2020] },
+  { name:"John Criscuola", years:[2026,2025] },
+  { name:"John Ehrling", years:[2020] },
+  { name:"John Sarni", years:[2026,2025,2024,2023,2022,2021,2020] },
+  { name:"John Schnmitzer", years:[2022,2021,2020] },
+  { name:"John Szabo", years:[2025] },
+  { name:"JohnLuke Lembo", years:[2026,2025,2024] },
+  { name:"Kevin Gately", years:[2026] },
+  { name:"Kevin O'Toole", years:[2024] },
+  { name:"Kevin Williams", years:[2023,2022,2021] },
+  { name:"Larry Intrabartola", years:[2024,2023,2022,2020] },
+  { name:"Luke Malone", years:[2020] },
+  { name:"Marty Glynn", years:[2026,2025,2021] },
+  { name:"Matt DiCaro", years:[2025,2024,2023,2021] },
+  { name:"Matt Menzel", years:[2025] },
+  { name:"Matt Michaels", years:[2026,2025,2024,2023,2022] },
+  { name:"Mike Gallo", years:[2026,2025,2024,2022,2021,2020] },
+  { name:"Mike Shannon", years:[2023,2022,2020] },
+  { name:"Nick Biunno", years:[2025] },
+  { name:"Pat Kaskiw", years:[2021] },
+  { name:"Pat Smith", years:[2024,2023,2020] },
+  { name:"Patrick Williams", years:[2023,2022] },
+  { name:"Paul Henning", years:[2026,2025,2024,2023,2022,2021] },
+  { name:"Pete Shamieh", years:[2026,2025,2024,2023,2022,2021,2020] },
+  { name:"Ralph Gamba", years:[2026,2025,2024,2023,2022,2021,2020] },
+  { name:"Rene Giacchi", years:[2026] },
+  { name:"Rich Morris", years:[2022,2021] },
+  { name:"Rob Archibald", years:[2020] },
+  { name:"Ryan Murphy", years:[2026,2025] },
+  { name:"Semos Gardner", years:[2023] },
+  { name:"Sigi Lembo", years:[2026,2025,2024] },
+  { name:"Stephen Gallo", years:[2024,2022,2021,2020] },
+  { name:"Tim O'Malley", years:[2026,2025,2024,2023,2022,2021] },
+  { name:"Tom Murray", years:[2023,2022,2021,2020] },
+  { name:"Tommy Sarni", years:[2025,2024,2023,2022,2021,2020] },
+  { name:"Vin Marisco", years:[2021,2020] },
+].sort((a, b) => {
+  const lastName = n => {
+    const parts = n.trim().split(' ');
+    const suffixes = ['jr.','sr.','jr','sr','ii','iii','iv'];
+    const last = parts.slice(1).filter(p => !suffixes.includes(p.toLowerCase().replace('.',''))).slice(-1)[0] || parts[0];
+    return last.toLowerCase();
+  };
+  return lastName(a.name).localeCompare(lastName(b.name));
+});
+
 function buildHistory() {
-  const names2024 = roommateData.slice(0,20).map(r=>r.name);
-  const names2023 = roommateData.slice(0,16).map(r=>r.name);
   const tbody = document.getElementById('yoy-table');
-  tbody.innerHTML = roommateData.map((r,i) => {
-    const trips = Math.floor(Math.random()*8)+1;
-    const years = Array.from({length:trips}, (_,k)=> 2024-k).join(', ');
-    return `<tr><td>${r.name}</td><td style="font-size:0.85rem; color:var(--text-muted);">${years}</td><td><strong>${trips}</strong></td></tr>`;
+  tbody.innerHTML = yoyData.map(r => {
+    const years = r.years.join(', ');
+    return `<tr><td>${r.name}</td><td style="font-size:0.85rem; color:var(--text-muted);">${years}</td><td><strong>${r.years.length}</strong></td></tr>`;
   }).join('');
 }
 
