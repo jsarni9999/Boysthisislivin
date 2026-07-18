@@ -3,7 +3,7 @@
   ╔══════════════════════════════════════════════════════════════╗
   ║           BOYS THIS IS LIVIN — SITE MAINTENANCE             ║
   ╠══════════════════════════════════════════════════════════════╣
-  ║  GOOGLE SHEET URL (for dynamic home page text):             ║
+  ║  GOOGLE SHEET URL (for dynamic home page text):    x        ║
   ║  Search for: SHEET_CSV_URL and SCORES_SCRIPT_URL            ║
   ║  Located near the bottom of this file in a <script> block   ║
   ║  Paste your published Google Sheet CSV URL between the ''   ║
@@ -74,7 +74,7 @@
 <div class="page active" id="page-home">
   <div class="hero">
     <h1>Boys This Is Livin</h1>
-    <div class="subtitle">Annual Golf Trip – Shawnee Inn & Golf Resort, PA – est 1995</div>
+    <div class="subtitle">Annual Golf Trip – Shawnee Inn & Golf Resort, PA – est 1972</div>
     <div class="hero-badges">
       <a href="https://maps.google.com/?q=Shawnee+Inn+and+Golf+Resort,+1+River+Road,+Shawnee+on+Delaware,+PA+18356" target="_blank" rel="noopener" class="badge" style="text-decoration:none; cursor:pointer;">📍 <strong>Shawnee Golf Course</strong></a>
       <div class="badge" id="home-hero-dates">📅 <strong>July 21–23, 2026</strong></div>
@@ -964,21 +964,36 @@ const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQB5DaeXC
 
 function parseCSV(text) {
   const results = {};
-  const rows = text.trim().split('\n').slice(1); // skip header
-  rows.forEach(row => {
-    // Robust CSV parser: handles quoted fields containing commas
-    const fields = [];
-    let cur = '', inQuote = false;
-    for (let i = 0; i < row.length; i++) {
-      const ch = row[i];
-      if (ch === '"' && row[i+1] === '"') { cur += '"'; i++; }
-      else if (ch === '"') { inQuote = !inQuote; }
-      else if (ch === ',' && !inQuote) { fields.push(cur); cur = ''; }
+  // Full CSV tokenizer: walks character-by-character so quoted fields
+  // (including ones containing commas AND line breaks) are handled
+  // correctly. We no longer split the raw text on '\n' up front, since
+  // that would incorrectly break a row apart at a line break that lives
+  // inside a quoted cell (e.g. text with Alt+Enter / CHAR(10) in it).
+  const allRows = [];
+  let row = [], cur = '', inQuote = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inQuote) {
+      if (ch === '"' && text[i+1] === '"') { cur += '"'; i++; }
+      else if (ch === '"') { inQuote = false; }
+      else { cur += ch; }
+    } else {
+      if (ch === '"') { inQuote = true; }
+      else if (ch === ',') { row.push(cur); cur = ''; }
+      else if (ch === '\r') { /* ignore, handled by \n or \r\n */ }
+      else if (ch === '\n') { row.push(cur); cur = ''; allRows.push(row); row = []; }
       else { cur += ch; }
     }
-    fields.push(cur);
+  }
+  // push the last field/row if the text didn't end with a newline
+  if (cur.length || row.length) { row.push(cur); allRows.push(row); }
+
+  const dataRows = allRows.slice(1); // skip header
+  dataRows.forEach(fields => {
     const key = (fields[0] || '').trim();
-    const val = (fields[1] || '').trim();
+    // Convert embedded line breaks to <br> so they render visually,
+    // since values are inserted via innerHTML further down.
+    const val = (fields[1] || '').trim().replace(/\n/g, '<br>');
     if (key) results[key] = val;
   });
   return results;
@@ -1169,7 +1184,7 @@ loadScoresFromSheet();
 
 // ── Password Gate ─────────────────────────────────────────────────────────
 const PW = 'MilkRun26';
-const PW_ENABLED = false; // ← set to false to disable password during development
+const PW_ENABLED = False; // ← set to false to disable password during development
 function checkPW() {
   const val = document.getElementById('pw-input').value;
   if (val === PW) {
