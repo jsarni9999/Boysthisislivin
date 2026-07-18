@@ -211,6 +211,7 @@
 <div id="gallery-lightbox" onclick="closeLightbox()" style="display:none; position:fixed; inset:0; z-index:200; background:rgba(10,20,15,0.95); align-items:center; justify-content:center; flex-direction:column; gap:16px;">
   <div onclick="event.stopPropagation()" style="position:relative; max-width:90vw; max-height:80vh; display:flex; flex-direction:column; align-items:center; gap:12px;">
     <img id="lb-img" src="" alt="" style="max-width:90vw; max-height:72vh; object-fit:contain; border-radius:6px; display:block;">
+    <video id="lb-video" controls autoplay style="max-width:90vw; max-height:72vh; border-radius:6px; display:none;"></video>
     <div style="display:flex; align-items:center; gap:16px;">
       <button onclick="lbNav(-1)" style="background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.3); color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:1.2rem; font-weight:700; padding:6px 20px; border-radius:20px; cursor:pointer; letter-spacing:1px;">← Prev</button>
       <div style="text-align:center;">
@@ -1193,6 +1194,7 @@ function openLightbox(photos, index) {
 }
 function closeLightbox() {
   document.getElementById('gallery-lightbox').style.display = 'none';
+  document.getElementById('lb-video').pause();
   document.body.style.overflow = '';
 }
 function lbNav(dir) {
@@ -1201,8 +1203,22 @@ function lbNav(dir) {
 }
 function renderLightbox() {
   const p = _lbPhotos[_lbIndex];
-  document.getElementById('lb-img').src = `gallery/${p.year}/${p.filename}`;
-  document.getElementById('lb-img').alt = p.caption;
+  const imgEl = document.getElementById('lb-img');
+  const vidEl = document.getElementById('lb-video');
+  if (p.isVideo) {
+    vidEl.src = `gallery/${p.year}/${p.filename}`;
+    vidEl.style.display = 'block';
+    imgEl.style.display = 'none';
+    imgEl.src = '';
+    vidEl.play().catch(()=>{});
+  } else {
+    vidEl.pause();
+    vidEl.src = '';
+    vidEl.style.display = 'none';
+    imgEl.style.display = 'block';
+    imgEl.src = `gallery/${p.year}/${p.filename}`;
+    imgEl.alt = p.caption;
+  }
   document.getElementById('lb-caption').textContent = p.caption || `${p.year} · ${p.filename}`;
   document.getElementById('lb-counter').textContent = `${_lbIndex + 1} / ${_lbPhotos.length}`;
 }
@@ -1230,10 +1246,12 @@ async function loadGallery() {
         else { cur += ch; }
       }
       fields.push(cur);
+      const filename = (fields[1]||'').trim().replace(/^"|"$/g,'');
       return {
         year: (fields[0]||'').trim().replace(/^"|"$/g,''),
-        filename: (fields[1]||'').trim().replace(/^"|"$/g,''),
-        caption: (fields[2]||'').trim().replace(/^"|"$/g,'')
+        filename: filename,
+        caption: (fields[2]||'').trim().replace(/^"|"$/g,''),
+        isVideo: /\.(mp4|mov|webm|m4v)$/i.test(filename)
       };
     }).filter(p => p.year && p.filename);
 
@@ -1247,6 +1265,20 @@ async function loadGallery() {
     container.innerHTML = years.map(year => {
       const thumbs = byYear[year].map((p, i) => {
         const globalIdx = photos.indexOf(p);
+        if (p.isVideo) {
+          return `<div onclick="openLightbox(window._allGalleryPhotos, ${globalIdx})"
+            style="position:relative; width:80px; height:64px; border-radius:4px; overflow:hidden; cursor:pointer; flex-shrink:0; border:2px solid transparent; transition:border-color 0.15s, transform 0.15s; background:#000;"
+            onmouseover="this.style.borderColor='var(--gold)'; this.style.transform='scale(1.04)';"
+            onmouseout="this.style.borderColor='transparent'; this.style.transform='scale(1)';">
+            <video src="gallery/${year}/${p.filename}" muted preload="metadata"
+              style="width:100%; height:100%; object-fit:cover; display:block;"></video>
+            <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none;">
+              <div style="width:22px; height:22px; border-radius:50%; background:rgba(0,0,0,0.55); display:flex; align-items:center; justify-content:center;">
+                <div style="width:0; height:0; border-top:5px solid transparent; border-bottom:5px solid transparent; border-left:8px solid #fff; margin-left:2px;"></div>
+              </div>
+            </div>
+          </div>`;
+        }
         return `<img src="gallery/${year}/${p.filename}" alt="${p.caption}" loading="lazy" decoding="async"
           style="width:80px; height:64px; object-fit:cover; border-radius:4px; display:block; border:2px solid transparent; transition:border-color 0.15s, transform 0.15s; cursor:pointer; flex-shrink:0;"
           onmouseover="this.style.borderColor='var(--gold)'; this.style.transform='scale(1.04)';"
