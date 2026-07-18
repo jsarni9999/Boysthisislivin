@@ -44,15 +44,15 @@
   <div class="nav-links">
     <button onclick="showPage('home')" id="nav-home" class="active">Home</button>
     <button onclick="showPage('schedule')" id="nav-schedule">Schedule</button>
-    <button onclick="showPage('admin')" id="nav-admin">Tee Times</button>
+    <button onclick="showPage('admin')" id="nav-admin" style="display:none;">Tee Times</button>
     <button onclick="showPage('scores')" id="nav-scores">Scores</button>
-    <button onclick="showPage('scramblepage')" id="nav-scramblepage">Scramble</button>
+    <button onclick="showPage('scramblepage')" id="nav-scramblepage" style="display:none;">Scramble</button>
     <button onclick="showPage('rules')" id="nav-rules">Rules</button>
     <button onclick="showPage('history')" id="nav-history">History</button>
     <button onclick="showPage('accommodations')" id="nav-accommodations">Stay</button>
     <button onclick="showPage('faqs')" id="nav-faqs">FAQs</button>
     <button onclick="showPage('gallery')" id="nav-gallery">Gallery</button>
-    <button onclick="showPage('roommates')" id="nav-roommates">Rooms</button>
+    <button onclick="showPage('roommates')" id="nav-roommates" style="display:none;">Rooms</button>
   </div>
   <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
     <span></span><span></span><span></span>
@@ -61,15 +61,15 @@
 <div class="mobile-menu" id="mobile-menu">
   <button onclick="navTo('home')">Home</button>
   <button onclick="navTo('schedule')">Schedule</button>
-  <button onclick="navTo('admin')">Tee Times</button>
+  <button onclick="navTo('admin')" style="display:none;">Tee Times</button>
   <button onclick="navTo('scores')">Scores</button>
-  <button onclick="navTo('scramblepage')">Scramble</button>
+  <button onclick="navTo('scramblepage')" style="display:none;">Scramble</button>
   <button onclick="navTo('rules')">Rules</button>
   <button onclick="navTo('history')">History</button>
   <button onclick="navTo('accommodations')">Stay</button>
   <button onclick="navTo('faqs')">FAQs</button>
   <button onclick="navTo('gallery')">Gallery</button>
-  <button onclick="navTo('roommates')">Rooms</button>
+  <button onclick="navTo('roommates')" style="display:none;">Rooms</button>
 </div>
 <div class="page active" id="page-home">
   <div class="hero">
@@ -96,6 +96,13 @@
     <h2 class="section-title" id="home-welcome-heading">Welcome Back, Boys</h2>
     <p style="color:var(--text-muted); line-height:1.8; font-size:1rem;" id="home-welcome-body">
       Another year, another excuse to ditch responsibilities and play bad golf with good people. Welcome back to the official (and only slightly over-engineered) home of the Boys This Is Livin golf trip. Check the schedule, find your roommate, and start trash talking now.
+      <br><br>
+      First tee shot was back in 1972, and we haven't missed a year since. We found our permanent home at Shawnee in 1992 and never left.
+      <br><br>
+      <div style="text-align:center;font-size:1.15em;font-weight:700;">The original cast back in 1972:</div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px 16px;margin:0 auto 0;max-width:680px;text-align:center;">
+        <div style="color:#d4943a;font-weight:700;font-size:1.1em;">Pete Butler</div><div style="color:#d4943a;font-weight:700;font-size:1.1em;">Sal Caprio</div><div style="color:#d4943a;font-weight:700;font-size:1.1em;">Tom Cregan</div><div style="color:#d4943a;font-weight:700;font-size:1.1em;">Joe Kane Sr</div><div style="color:#d4943a;font-weight:700;font-size:1.1em;">Monsignor Kelly</div><div style="color:#d4943a;font-weight:700;font-size:1.1em;">Ed Mcinroy</div><div style="color:#d4943a;font-weight:700;font-size:1.1em;">Rich Morris</div><div style="color:#d4943a;font-weight:700;font-size:1.1em;">Jack O'Roarke</div><div style="color:#d4943a;font-weight:700;font-size:1.1em;">Don Schwartz</div><div style="color:#d4943a;font-weight:700;font-size:1.1em;">John Slevin</div>
+      </div>
     </p>
     <div style="margin-top:1.5rem; border-radius:var(--radius); overflow:hidden; box-shadow:0 4px 16px rgba(0,0,0,0.12);">
       <img src="team_photo_2025.jpg" alt="Boys This Is Livin 2025" style="width:100%; display:block; max-height:420px; object-fit:cover; object-position:center top;">
