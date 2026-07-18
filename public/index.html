@@ -189,22 +189,11 @@
           <tr>
             <th>Year</th>
             <th>Winner</th>
-            <th>The Incident</th>
           </tr>
         </thead>
         <tbody id="milkrun-winners-body">
         </tbody>
       </table>
-    </div>
-
-    <div style="background:var(--white); border:1px solid #ddd; border-radius:4px; padding:1.25rem; margin-top:1.5rem;">
-      <h3 style="font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--green-dark); margin-bottom:1rem;">Add a Winner</h3>
-      <div class="form-grid">
-        <div class="form-group"><label>Year</label><input type="text" id="milkrun-year" placeholder="e.g. 2024"></div>
-        <div class="form-group"><label>Winner</label><input type="text" id="milkrun-winner" placeholder="Player name"></div>
-        <div class="form-group full"><label>The Incident</label><input type="text" id="milkrun-incident" placeholder="What happened?"></div>
-      </div>
-      <button class="btn btn-gold" style="margin-top:0.75rem;" onclick="addMilkRunWinner()">Add Winner</button>
     </div>
   </div>
 </div>
@@ -302,7 +291,6 @@
     <h2 class="section-title">Event History - Under Construction</h2>
 <div class="tab-bar">
       <button class="tab-btn active" onclick="showHistoryTab('history-trip',this)">Event History</button>
-      <button class="tab-btn" onclick="showHistoryTab('history-milkrun',this)">🍶 Milk Run Award</button>
       <button class="tab-btn" onclick="showHistoryTab('history-yoy',this)">Year Over Year</button>
       <button class="tab-btn" onclick="showHistoryTab('history-winners',this)">Winners</button>
     </div>
@@ -314,35 +302,6 @@
         <div class="accordion-body">
           <p id="history-about">Boys This Is Livin started as a few guys hitting the links and somehow turned into a full-blown annual tradition. This page is the archive — every year, every face, every round. If you've been on this trip, you know. If you haven't, you're missing out.</p>
         </div>
-      </div>
-    </div>
-<div class="history-tab-panel" id="tab-history-milkrun">
-      <div class="card" style="border-left:4px solid var(--gold); margin-bottom:1.5rem; background:linear-gradient(135deg,#fffdf5,#fff8e8);">
-        <h3 style="font-size:1.2rem; margin-bottom:0.75rem; color:var(--green-dark);">The Legend</h3>
-        <p style="line-height:1.8; color:var(--text-muted);">
-          <span id="milkrun-legend-p1-hist">Every great tradition has an origin story. The Milk Run Award was born from one of those late-night moments that only happens on a golf trip — when somebody, somehow, ended up on a milk run at an hour that shall not be spoken of, in a condition that shall not be described, retrieving provisions that shall not be questioned.</span>
-        </p>
-        <p style="line-height:1.8; color:var(--text-muted); margin-top:0.75rem;">
-          <span id="milkrun-legend-p2-hist">Since that fateful night, the Milk Run Award has been presented each year to the individual who best exemplifies the spirit of the run: selfless service, questionable judgment, and an unwavering commitment to the crew — no matter the hour, no matter the cost.</span>
-        </p>
-        <p style="line-height:1.8; color:var(--text-muted); margin-top:0.75rem;">
-          <span id="milkrun-legend-p3-hist">It is not the most prestigious award on the trip. It may, however, be the most important.</span>
-        </p>
-      </div>
-      <div class="table-wrap" style="margin-bottom:1.5rem;">
-        <table>
-          <thead><tr><th>Year</th><th>Winner</th><th>The Incident</th></tr></thead>
-          <tbody id="milkrun-winners-body-hist"></tbody>
-        </table>
-      </div>
-      <div style="background:var(--white); border:1px solid #ddd; border-radius:4px; padding:1.25rem;">
-        <h3 style="font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--green-dark); margin-bottom:1rem;">Add a Winner</h3>
-        <div class="form-grid">
-          <div class="form-group"><label>Year</label><input type="text" id="milkrun-year-hist" placeholder="e.g. 2024"></div>
-          <div class="form-group"><label>Winner</label><input type="text" id="milkrun-winner-hist" placeholder="Player name"></div>
-          <div class="form-group full"><label>The Incident</label><input type="text" id="milkrun-incident-hist" placeholder="What happened?"></div>
-        </div>
-        <button class="btn btn-gold" style="margin-top:0.75rem;" onclick="addMilkRunWinnerHist()">Add Winner</button>
       </div>
     </div>
 <div class="history-tab-panel" id="tab-history-yoy">
@@ -433,7 +392,7 @@
       <h3 style="font-family:'Barlow Condensed',sans-serif; font-size:1.1rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--green-dark); margin-bottom:1rem;">Player Scores</h3>
       <div class="table-wrap" style="margin-bottom:1rem;">
         <table>
-          <thead><tr><th>Player</th><th>7/22 Morning Round</th><th>7/22 Optional Round</th><th>7/23 Morning Round</th><th>Edit</th></tr></thead>
+          <thead><tr><th>Player</th><th>7/21 Morning Round</th><th>7/21 Optional Round</th><th>7/22 Morning Round</th><th>Edit</th></tr></thead>
           <tbody id="scores-body"></tbody>
         </table>
       </div>
@@ -474,7 +433,7 @@
     <h2 class="section-title">Player Scores</h2>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Player</th><th>7/22 Morning Round</th><th>7/22 Optional Round</th><th>7/23 Morning Round</th><th>Save</th></tr></thead>
+        <thead><tr><th>Player</th><th>7/21 Morning Round</th><th>7/21 Optional Round</th><th>7/22 Morning Round</th><th>Save</th></tr></thead>
         <tbody id="public-scores-body"></tbody>
       </table>
     </div>
@@ -894,7 +853,7 @@ function showPage(id) {
   if (nav) nav.classList.add('active');
   if (id === 'scores') { buildPublicScores(); buildScoresTable(); }
   if (id === 'gallery') loadGallery();
-  if (id === 'milkrun') { buildMilkRunWinners(); buildMilkRunWinnersHist(); }
+  if (id === 'milkrun') { buildMilkRunWinners(); }
   if (id === 'scramblepage') buildScramblePage();
   window.scrollTo(0,0);
 }
@@ -910,7 +869,6 @@ function showHistoryTab(id, el) {
   document.querySelectorAll('#page-history .tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
   if (el) el.classList.add('active');
-  if (id === 'history-milkrun') buildMilkRunWinnersHist();
 }
 
 function toggleAccordion(btn) {
@@ -928,31 +886,23 @@ buildTeeTimes();
 buildTeeTimes2();
 
 const milkRunWinners = [
-  { year: '2023', winner: 'TBD', incident: 'The original run — the one that started it all.' },
+  { year: '2026', winner: '???' },
+  { year: '2025', winner: 'Ralph Gamba' },
+  { year: '2024', winner: 'Tim O\'Malley' },
+  { year: '2023', winner: 'John Sarni' },
+  { year: '2022', winner: 'Dom Giambattista' },
+  { year: '2021', winner: 'Jason Manning' },
+  { year: '2021', winner: 'Kevin Williams' },
+  { year: '2020', winner: 'Tom Murray' },
+  { year: '2019', winner: 'Richard Morris' },
+  { year: '2018', winner: 'Helms Bohringer' },
+  { year: '2017', winner: 'Angelo Giambattista' },
+  { year: '2016', winner: 'Steven Gallo' },
+  { year: '2015', winner: 'Don Schwartz' },
+  { year: '2014', winner: 'Andrew Morris' },
+  { year: '2013', winner: 'Anthony Criscuola' },
+  { year: '2012', winner: 'Marty Glynn' },
 ];
-function buildMilkRunWinnersHist() {
-  const tbody = document.getElementById('milkrun-winners-body-hist');
-  if (!tbody) return;
-  tbody.innerHTML = milkRunWinners.map(w => `
-    <tr>
-      <td style="font-family:'Barlow Condensed',sans-serif; font-weight:700; color:var(--gold); font-size:1.1rem;">${w.year}</td>
-      <td style="font-weight:600;">${w.winner}</td>
-      <td style="color:var(--text-muted);">${w.incident}</td>
-    </tr>
-  `).join('');
-}
-function addMilkRunWinnerHist() {
-  const y = document.getElementById('milkrun-year-hist').value.trim();
-  const w = document.getElementById('milkrun-winner-hist').value.trim();
-  const i = document.getElementById('milkrun-incident-hist').value.trim();
-  if (!y || !w) return;
-  milkRunWinners.unshift({year:y, winner:w, incident:i});
-  buildMilkRunWinners();
-  buildMilkRunWinnersHist();
-  document.getElementById('milkrun-year-hist').value='';
-  document.getElementById('milkrun-winner-hist').value='';
-  document.getElementById('milkrun-incident-hist').value='';
-}
 function buildMilkRunWinners() {
   const tbody = document.getElementById('milkrun-winners-body');
   if (!tbody) return;
@@ -960,20 +910,8 @@ function buildMilkRunWinners() {
     <tr>
       <td style="font-family:'Barlow Condensed',sans-serif; font-weight:700; color:var(--gold); font-size:1.1rem;">${w.year}</td>
       <td style="font-weight:600;">${w.winner}</td>
-      <td style="color:var(--text-muted);">${w.incident}</td>
     </tr>
   `).join('');
-}
-function addMilkRunWinner() {
-  const y = document.getElementById('milkrun-year').value.trim();
-  const w = document.getElementById('milkrun-winner').value.trim();
-  const i = document.getElementById('milkrun-incident').value.trim();
-  if (!y || !w) return;
-  milkRunWinners.unshift({year:y, winner:w, incident:i});
-  buildMilkRunWinners();
-  document.getElementById('milkrun-year').value='';
-  document.getElementById('milkrun-winner').value='';
-  document.getElementById('milkrun-incident').value='';
 }
 
 buildHistory();
